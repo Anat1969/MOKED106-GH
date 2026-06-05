@@ -6,7 +6,10 @@ from flask import Flask, send_from_directory
 from routes.data_routes import api
 from models.database import init_db
 
-app = Flask(__name__, static_folder='static', template_folder='templates')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+app = Flask(__name__,
+            static_folder=os.path.join(BASE_DIR, 'static'),
+            template_folder=os.path.join(BASE_DIR, 'templates'))
 
 app.register_blueprint(api)
 
