@@ -1,5 +1,25 @@
 const TOTAL_CALLS = 21084;
 
+function formatSlaTime(timeStr) {
+    if (!timeStr || timeStr === '—') return '—';
+    const parts = timeStr.split(':').map(Number);
+    if (parts.length !== 3) return timeStr;
+    const [h, m, s] = parts;
+    const totalMinutes = h * 60 + m;
+
+    if (h === 0 && m === 0 && s > 0) return `${s} שניות`;
+    if (h === 0 && m > 0) return `${m} דקות`;
+    if (h === 1 && m === 0) return 'שעה';
+    if (h === 2 && m === 0) return 'שעתיים';
+    if (h >= 24) {
+        const days = h / 24;
+        const daysStr = Number.isInteger(days) ? days : days.toFixed(1);
+        return `${h} שעות (${daysStr} ימים)`;
+    }
+    if (m === 0) return `${h} שעות`;
+    return `${h} שעות ו-${m} דקות`;
+}
+
 function slaClass(pct) {
     if (pct >= 95) return 'sla-excellent';
     if (pct >= 90) return 'sla-good';
@@ -71,7 +91,7 @@ const Tables = {
                 <td class="">${i + 1}</td>
                 <td>${item.department}</td>
                 <td>${item.issue_name}</td>
-                <td class="">${item.sla_time || '—'}</td>
+                <td class="">${formatSlaTime(item.sla_time)}</td>
                 <td class="">${item.total_calls.toLocaleString()}</td>
                 <td class="">${pct}</td>
                 <td class="${slaClass(item.sla_percent)}">${item.sla_percent}% <small>(${slaLabel(item.sla_percent)})</small></td>
