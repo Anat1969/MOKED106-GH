@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מוקד 106 אשדוד - דשבורד</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>מוקד עירוני 106 — אשדוד</h1>
+            <div class="header-meta">
+                <span class="month-badge">מאי 2026</span>
+                <span class="source-badge">מקור: דוח מוקד עירוני מאי 2026 | מערכת CW</span>
+            </div>
+        </div>
+    </header>
+
+    <nav class="tabs">
+        <button class="tab active" data-tab="overview">סקירה כללית</button>
+        <button class="tab" data-tab="managers">מנהלים</button>
+        <button class="tab" data-tab="departments">מחלקות</button>
+        <button class="tab" data-tab="issues">נושאים</button>
+        <button class="tab" data-tab="heatmap">טבלת חום</button>
+        <button class="tab" data-tab="map">מפה</button>
+        <button class="tab" data-tab="districts">רובעים</button>
+    </nav>
+
+    <main>
+        <!-- Overview -->
+        <section id="tab-overview" class="tab-content active">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-value" id="totalCalls">—</div>
+                    <div class="kpi-label">סה"כ פניות בחודש מאי</div>
+                    <div class="kpi-insight" id="totalCallsInsight"></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" id="slaPercent">—</div>
+                    <div class="kpi-label">עמידה בזמן תקן</div>
+                    <div class="kpi-insight">תקן יעד: 80% לכל מנהל. ממוצע כלל הפניות.</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" id="slaChange">—</div>
+                    <div class="kpi-label">שינוי מחודש קודם</div>
+                    <div class="kpi-insight" id="slaChangeInsight"></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" id="totalOverdue">—</div>
+                    <div class="kpi-label">פניות חורגות ופתוחות</div>
+                    <div class="kpi-insight" id="overdueInsight"></div>
+                </div>
+            </div>
+
+            <div class="charts-row">
+                <div class="chart-card">
+                    <h3>התפלגות פניות לפי מנהלים — מי מטפל בכמה?</h3>
+                    <p class="chart-insight" id="managersChartInsight"></p>
+                    <canvas id="managersChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>10 הנושאים המובילים — בכמה פניות טיפלו בכל נושא?</h3>
+                    <p class="chart-insight" id="topIssuesChartInsight"></p>
+                    <canvas id="topIssuesChart"></canvas>
+                </div>
+            </div>
+
+            <div class="charts-row">
+                <div class="chart-card">
+                    <h3>מחלקות מובילות — כמה פניות טיפלה כל מחלקה?</h3>
+                    <p class="chart-insight" id="deptChartInsight"></p>
+                    <canvas id="deptChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>עמידה בתקן לפי מחלקות — מי עומד ביעד 80% ומי חורג?</h3>
+                    <p class="chart-insight" id="deptSlaInsight"></p>
+                    <canvas id="deptSlaChart"></canvas>
+                </div>
+            </div>
+
+            <div class="source-note">
+                <strong>מקורות:</strong> דוח מוקד עירוני 106, מאי 2026 (1.5–31.5). מערכת CW מוקד עירוני אשדוד. דוח מנכ"ל. קובץ 10 נושאים לפי רחובות.
+            </div>
+        </section>
+
+        <!-- Managers -->
+        <section id="tab-managers" class="tab-content">
+            <h2>מנהלים — כמות פניות ואחוז עמידה בזמן תקן</h2>
+            <p class="section-insight" id="managersInsight"></p>
+            <div class="table-container">
+                <table id="managersTable" class="sortable">
+                    <thead><tr>
+                        <th data-col="0" data-type="string">מנהל <span class="sort-icon">⇅</span></th>
+                        <th data-col="1" data-type="number">סה"כ פניות <span class="sort-icon">⇅</span></th>
+                        <th data-col="2" data-type="number">% מסה"כ <span class="sort-icon">⇅</span></th>
+                        <th data-col="3" data-type="number">עמידה בתקן (יעד: 80%) <span class="sort-icon">⇅</span></th>
+                        <th data-col="4" data-type="number">שינוי מחודש קודם <span class="sort-icon">⇅</span></th>
+                        <th data-col="5" data-type="number">תקן 2025 <span class="sort-icon">⇅</span></th>
+                        <th data-col="6" data-type="number">חורגות ופתוחות <span class="sort-icon">⇅</span></th>
+                    </tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="chart-card" style="margin-top:2rem">
+                <h3>השוואת עמידה בתקן: מאי 2026 מול ממוצע 2025 — מי השתפר ומי ירד?</h3>
+                <p class="chart-insight">גרף קו המשווה את ביצועי כל מנהל בין מאי 2026 לממוצע שנת 2025. קו מקווקו אדום = תקן יעד 80%.</p>
+                <canvas id="managersLineChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Departments -->
+        <section id="tab-departments" class="tab-content">
+            <h2>דוח 20/80 — 8 מחלקות שמטפלות ב-53% מכלל הפניות</h2>
+            <p class="section-insight" id="deptInsight"></p>
+            <div class="table-container">
+                <table id="deptTable" class="sortable">
+                    <thead><tr>
+                        <th data-col="0" data-type="string">מחלקה <span class="sort-icon">⇅</span></th>
+                        <th data-col="1" data-type="number">סה"כ פניות <span class="sort-icon">⇅</span></th>
+                        <th data-col="2" data-type="number">% מסה"כ <span class="sort-icon">⇅</span></th>
+                        <th data-col="3" data-type="number">שינוי בכמות מחודש קודם <span class="sort-icon">⇅</span></th>
+                        <th data-col="4" data-type="number">עמידה בתקן (יעד: 80%) <span class="sort-icon">⇅</span></th>
+                        <th data-col="5" data-type="number">שינוי בתקן מחודש קודם <span class="sort-icon">⇅</span></th>
+                        <th data-col="6" data-type="number">חורגות ופתוחות <span class="sort-icon">⇅</span></th>
+                    </tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Issues -->
+        <section id="tab-issues" class="tab-content">
+            <h2 id="issuesTitle">10 הנושאים המובילים בכמות פניות — מהם ומה עמידתם בתקן?</h2>
+            <p class="section-insight" id="issuesInsight"></p>
+            <div class="issues-toggle">
+                <button class="btn active" data-filter="top">10 נושאים מובילים בכמות</button>
+                <button class="btn" data-filter="critical">נושאים מתחת ל-80% עמידה בתקן</button>
+                <button class="btn" data-filter="all">כל הנושאים</button>
+            </div>
+            <div class="table-container">
+                <table id="issuesTable" class="sortable">
+                    <thead><tr>
+                        <th data-col="0" data-type="number"># <span class="sort-icon">⇅</span></th>
+                        <th data-col="1" data-type="string">מחלקה <span class="sort-icon">⇅</span></th>
+                        <th data-col="2" data-type="string">נושא <span class="sort-icon">⇅</span></th>
+                        <th data-col="3" data-type="string">זמן תקן <span class="sort-icon">⇅</span></th>
+                        <th data-col="4" data-type="number">סה"כ פניות <span class="sort-icon">⇅</span></th>
+                        <th data-col="5" data-type="number">% מסה"כ <span class="sort-icon">⇅</span></th>
+                        <th data-col="6" data-type="number">עמידה בתקן (%) <span class="sort-icon">⇅</span></th>
+                    </tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Heatmap -->
+        <section id="tab-heatmap" class="tab-content">
+            <h2>טבלת חום — 10 נושאים מובילים בפילוח לפי רחובות</h2>
+            <p class="section-insight">הטבלה מציגה 19 רחובות עם ריבוי פניות, מחולקים ל-10 נושאים מובילים. תאים בצהוב = ריכוז גבוה (70%+ מהמקסימום בעמודה). סה"כ 4,621 פניות. המטרה: לזהות מוקדי בעיה גיאוגרפיים.</p>
+            <div class="table-container heatmap-container">
+                <table id="heatmapTable" class="heatmap sortable">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="source-note" style="margin-top:1rem">
+                <strong>מקור:</strong> שקופית מפת חום — 10 נושאים מובילים בכמות פניות 106, מאי 2026.
+            </div>
+        </section>
+
+        <!-- Map -->
+        <section id="tab-map" class="tab-content">
+            <h2>מפת אשדוד — מיקום פניות לפי רחובות על מפה עירונית</h2>
+            <p class="section-insight">לחצו על עיגול לפרטי הרחוב. גודל העיגול = כמות פניות. החליפו בין תצוגת כמות פניות לתצוגת עמידה בתקן.</p>
+            <div class="map-controls">
+                <div class="zoom-buttons">
+                    <button class="btn zoom-btn active" data-zoom="13" data-label="עיר">עיר</button>
+                    <button class="btn zoom-btn" data-zoom="15" data-label="רובע">רובע</button>
+                    <button class="btn zoom-btn" data-zoom="17" data-label="רחוב">רחוב</button>
+                </div>
+                <div class="map-layer-toggle">
+                    <label><input type="radio" name="mapLayer" value="calls" checked> צבע לפי כמות פניות</label>
+                    <label><input type="radio" name="mapLayer" value="sla"> צבע לפי עמידה בתקן</label>
+                </div>
+            </div>
+            <div id="mapContainer" style="height:600px;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.12)"></div>
+            <div class="source-note" style="margin-top:1rem">
+                <strong>מקור:</strong> מיקומי רחובות — OpenStreetMap Geocoding, אשדוד. נתוני פניות — דוח מוקד 106, מאי 2026.
+            </div>
+        </section>
+
+        <!-- Districts -->
+        <section id="tab-districts" class="tab-content">
+            <h2>פילוח פניות לפי רובעי העיר — היכן פונים הכי הרבה ומי עומד בתקן?</h2>
+            <p class="section-insight" id="districtsInsight"></p>
+            <div class="chart-card" style="margin-bottom:2rem">
+                <h3>כמות פניות לפי רובע — גרף קו בסדר יורד</h3>
+                <p class="chart-insight">קו מקווקו אדום = רף תקן 80%.</p>
+                <canvas id="districtsChart" height="140"></canvas>
+            </div>
+            <div class="table-container">
+                <table id="districtsTable" class="sortable">
+                    <thead><tr>
+                        <th data-col="0" data-type="string">רובע <span class="sort-icon">⇅</span></th>
+                        <th data-col="1" data-type="number">תושבים <span class="sort-icon">⇅</span></th>
+                        <th data-col="2" data-type="number">סה"כ פניות <span class="sort-icon">⇅</span></th>
+                        <th data-col="3" data-type="number">% מסה"כ <span class="sort-icon">⇅</span></th>
+                        <th data-col="4" data-type="number">פניות ל-100 תושבים <span class="sort-icon">⇅</span></th>
+                        <th data-col="5" data-type="number">עמידה בתקן (יעד: 80%) <span class="sort-icon">⇅</span></th>
+                        <th data-col="6" data-type="number">חורגות ופתוחות <span class="sort-icon">⇅</span></th>
+                    </tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="source-note" style="margin-top:1rem">
+                <strong>מקור:</strong> דוח מוקד עירוני 106 — פילוח פניות ביחס לרובעי העיר, מאי 2026. כמות תושבים — נתוני עירייה.
+            </div>
+        </section>
+    </main>
+
+    <aside class="sidebar-ref" id="sidebarRef">
+        <!-- Content injected dynamically per tab -->
+    </aside>
+
+    <footer>
+        <p>מוקד עירוני 106 אשדוד — דשבורד ניהולי | מאי 2026 (1.5–31.5) | מקור: דוח מוקד עירוני + מערכת CW</p>
+    </footer>
+
+    <script src="/static/js/modules/api.js"></script>
+    <script src="/static/js/modules/charts.js"></script>
+    <script src="/static/js/modules/tables.js"></script>
+    <script src="/static/js/modules/heatmap.js"></script>
+    <script src="/static/js/modules/sorting.js"></script>
+    <script src="/static/js/modules/map.js"></script>
+    <script src="/static/js/modules/sidebar.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
