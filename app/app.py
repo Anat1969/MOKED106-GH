@@ -14,6 +14,17 @@ app.register_blueprint(api)
 def index():
     return send_from_directory('templates', 'index.html')
 
+def auto_seed():
+    """Seed the database automatically if it's empty."""
+    from models.database import get_db
+    conn = get_db()
+    count = conn.execute("SELECT COUNT(*) FROM monthly_summary").fetchone()[0]
+    conn.close()
+    if count == 0:
+        from seed_data import seed
+        seed()
+
 if __name__ == '__main__':
     init_db()
+    auto_seed()
     app.run(debug=True, port=5000)
