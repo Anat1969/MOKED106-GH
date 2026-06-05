@@ -1,5 +1,5 @@
 :root {
-    --primary: #8B1A1A;
+    --primary: #1B3A5C;
     --primary-light: #B8860B;
     --bg: #F5F0E8;
     --card-bg: #FFFFFF;
@@ -83,7 +83,7 @@ main { max-width: 1400px; margin: 0 auto; padding: 1.5rem 2rem; }
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 .chart-card h3 {
-    font-size: 0.95rem; color: var(--text); margin-bottom: 0.3rem;
+    font-size: 0.95rem; color: #2C2C2C; font-weight: 700; margin-bottom: 0.3rem;
     padding-bottom: 0.4rem; border-bottom: 1px solid var(--border);
 }
 .chart-insight {
@@ -92,7 +92,7 @@ main { max-width: 1400px; margin: 0 auto; padding: 1.5rem 2rem; }
 }
 
 /* Section headers */
-h2 { font-size: 1.25rem; margin-bottom: 0.4rem; color: var(--primary); }
+h2 { font-size: 1.25rem; margin-bottom: 0.4rem; color: #2C2C2C; font-weight: 700; }
 .section-insight {
     font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem;
     line-height: 1.5; font-style: italic;
@@ -202,7 +202,19 @@ tbody tr:last-child td { border-bottom: none; }
     font-weight: 700;
     font-size: 0.75rem;
     margin-bottom: 0.3rem;
-    color: var(--primary);
+    color: #2C2C2C;
+}
+.sidebar-ref .sb-line-solid {
+    width: 20px; height: 0; flex-shrink: 0;
+    border-top: 2.5px solid #333;
+}
+.sidebar-ref .sb-line-dashed-gray {
+    width: 20px; height: 0; flex-shrink: 0;
+    border-top: 2px dashed #999;
+}
+.sidebar-ref .sb-line-dashed-red {
+    width: 20px; height: 0; flex-shrink: 0;
+    border-top: 2px dashed #C62828;
 }
 .sidebar-ref .sb-row {
     display: flex;

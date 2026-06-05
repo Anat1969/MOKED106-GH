@@ -11,9 +11,9 @@ const Heatmap = {
         });
 
         thead.innerHTML = `<tr>
-            <th>רחוב / נושא</th>
-            ${issues.map(i => `<th>${i}</th>`).join('')}
-            <th>סה"כ</th>
+            <th data-col="0" data-type="string">רחוב / נושא <span class="sort-icon">⇅</span></th>
+            ${issues.map((issue, i) => `<th data-col="${i + 1}" data-type="number">${issue} <span class="sort-icon">⇅</span></th>`).join('')}
+            <th data-col="${issues.length + 1}" data-type="number">סה"כ <span class="sort-icon">⇅</span></th>
         </tr>`;
 
         const totals = {};

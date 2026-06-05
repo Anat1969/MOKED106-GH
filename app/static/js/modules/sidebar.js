@@ -66,8 +66,12 @@ const Sidebar = {
             <div class="sb-section">
                 <div class="sb-title">קבועים</div>
                 <div class="sb-item"><span class="sb-val">7</span> מנהלים בסה"כ</div>
-                <div class="sb-item">קו שחור רציף — מאי 2026</div>
-                <div class="sb-item">קו אפור מקווקו — ממוצע 2025</div>
+            </div>
+            <div class="sb-section">
+                <div class="sb-title">סוגי קווים בגרף</div>
+                <div class="sb-row"><span class="sb-line-solid"></span> מאי 2026</div>
+                <div class="sb-row"><span class="sb-line-dashed-gray"></span> ממוצע 2025</div>
+                <div class="sb-row"><span class="sb-line-dashed-red"></span> יעד תקן 80%</div>
             </div>
             <div class="sb-section">
                 <div class="sb-title">מקור</div>

@@ -188,7 +188,7 @@ const Charts = {
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { position: 'top', rtl: true },
+                    legend: { display: false },
                     slaZones: { enabled: true },
                     tooltip: {
                         callbacks: {
@@ -254,7 +254,7 @@ const Charts = {
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { position: 'top', rtl: true },
+                    legend: { display: false },
                     slaZones: { enabled: true },
                     tooltip: {
                         callbacks: {
