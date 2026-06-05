@@ -6,19 +6,18 @@ function slaColor(pct) {
     return '#C62828';
 }
 
-// Plugin: draws colored SLA background zones on charts with y-axis SLA scale
+const axisTitle = (text) => ({ display: true, text, font: { size: 11, weight: '600' }, color: '#666' });
+
 const slaZonesPlugin = {
     id: 'slaZones',
     beforeDraw(chart) {
         if (!chart.options.plugins.slaZones?.enabled) return;
-        const { ctx, chartArea: { left, right, top, bottom }, scales: { y } } = chart;
-
+        const { ctx, chartArea: { left, right }, scales: { y } } = chart;
         const zones = [
             { min: 90, max: y.max, color: 'rgba(46,125,50,0.07)' },
             { min: 80, max: 90, color: 'rgba(239,108,0,0.07)' },
             { min: y.min, max: 80, color: 'rgba(198,40,40,0.07)' },
         ];
-
         zones.forEach(z => {
             const yTop = y.getPixelForValue(Math.min(z.max, y.max));
             const yBot = y.getPixelForValue(Math.max(z.min, y.min));
@@ -74,19 +73,14 @@ const Charts = {
         this.instances[canvasId] = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: data.map(d => d.issue_name.length > 18 ? d.issue_name.substring(0, 18) + '…' : d.issue_name),
+                labels: data.map((d, i) => `${i+1}. ${d.issue_name.length > 16 ? d.issue_name.substring(0, 16) + '…' : d.issue_name}`),
                 datasets: [{
-                    label: 'כמות פניות',
                     data: data.map(d => d.total_calls),
                     borderColor: '#333',
                     backgroundColor: 'rgba(0,0,0,0.04)',
-                    fill: true,
-                    tension: 0.3,
-                    pointRadius: 6,
-                    pointBackgroundColor: '#333',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    borderWidth: 2
+                    fill: true, tension: 0.3,
+                    pointRadius: 6, pointBackgroundColor: '#333',
+                    pointBorderColor: '#fff', pointBorderWidth: 2, borderWidth: 2
                 }]
             },
             options: {
@@ -98,14 +92,14 @@ const Charts = {
                             label: (ctx) => {
                                 const d = data[ctx.dataIndex];
                                 const pct = ((d.total_calls / totalAll) * 100).toFixed(1);
-                                return `${d.total_calls.toLocaleString()} פניות (${pct}% מסה"כ) | תקן: ${d.sla_percent}% | זמן תקן: ${d.sla_time || '—'}`;
+                                return `${d.total_calls.toLocaleString()} פניות (${pct}% מכלל הפניות) | תקן: ${d.sla_percent}% | זמן תקן: ${d.sla_time || '—'}`;
                             }
                         }
                     }
                 },
                 scales: {
-                    y: { beginAtZero: true, grid: { color: '#F0EBE0' } },
-                    x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 45, minRotation: 30 } }
+                    y: { beginAtZero: true, grid: { color: '#F0EBE0' }, title: axisTitle('כמות פניות') },
+                    x: { grid: { display: false }, ticks: { font: { size: 9 }, maxRotation: 45, minRotation: 30 }, title: axisTitle('נושא') }
                 }
             }
         });
@@ -119,17 +113,12 @@ const Charts = {
             data: {
                 labels: data.map(d => d.name),
                 datasets: [{
-                    label: 'כמות פניות',
                     data: data.map(d => d.total_calls),
                     borderColor: '#333',
                     backgroundColor: 'rgba(0,0,0,0.04)',
-                    fill: true,
-                    tension: 0.3,
-                    pointRadius: 6,
-                    pointBackgroundColor: '#333',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    borderWidth: 2
+                    fill: true, tension: 0.3,
+                    pointRadius: 6, pointBackgroundColor: '#333',
+                    pointBorderColor: '#fff', pointBorderWidth: 2, borderWidth: 2
                 }]
             },
             options: {
@@ -141,14 +130,14 @@ const Charts = {
                             label: (ctx) => {
                                 const d = data[ctx.dataIndex];
                                 const pct = ((d.total_calls / totalAll) * 100).toFixed(1);
-                                return `${d.total_calls.toLocaleString()} פניות (${pct}% מסה"כ) | תקן: ${d.sla_percent}% | שינוי: ${d.sla_change > 0 ? '+' : ''}${d.sla_change}%`;
+                                return `${d.total_calls.toLocaleString()} פניות (${pct}% מכלל הפניות) | תקן: ${d.sla_percent}% | שינוי: ${d.sla_change > 0 ? '+' : ''}${d.sla_change}%`;
                             }
                         }
                     }
                 },
                 scales: {
-                    y: { beginAtZero: true, grid: { color: '#F0EBE0' } },
-                    x: { grid: { display: false }, ticks: { font: { size: 11 } } }
+                    y: { beginAtZero: true, grid: { color: '#F0EBE0' }, title: axisTitle('כמות פניות') },
+                    x: { grid: { display: false }, ticks: { font: { size: 11 } }, title: axisTitle('מחלקה') }
                 }
             }
         });
@@ -163,25 +152,16 @@ const Charts = {
                 labels: data.map(d => d.name),
                 datasets: [
                     {
-                        label: '% עמידה בתקן',
                         data: data.map(d => d.sla_percent),
-                        borderColor: '#333',
-                        fill: false,
-                        tension: 0.3,
+                        borderColor: '#333', fill: false, tension: 0.3,
                         pointRadius: 7,
                         pointBackgroundColor: data.map(d => slaColor(d.sla_percent)),
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        borderWidth: 2
+                        pointBorderColor: '#fff', pointBorderWidth: 2, borderWidth: 2
                     },
                     {
-                        label: 'יעד תקן 80%',
                         data: data.map(() => 80),
-                        borderColor: '#C62828',
-                        borderDash: [8, 4],
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        fill: false
+                        borderColor: '#C62828', borderDash: [8, 4],
+                        borderWidth: 2, pointRadius: 0, fill: false
                     }
                 ]
             },
@@ -202,8 +182,8 @@ const Charts = {
                     }
                 },
                 scales: {
-                    y: { min: 70, max: 102, grid: { color: '#F0EBE0' } },
-                    x: { grid: { display: false }, ticks: { font: { size: 11 } } }
+                    y: { min: 70, max: 102, grid: { color: '#F0EBE0' }, title: axisTitle('% עמידה בתקן') },
+                    x: { grid: { display: false }, ticks: { font: { size: 11 } }, title: axisTitle('מחלקה') }
                 }
             }
         });
@@ -218,36 +198,24 @@ const Charts = {
                 labels: data.map(d => d.name),
                 datasets: [
                     {
-                        label: 'מאי 2026',
                         data: data.map(d => d.sla_percent),
-                        borderColor: '#333',
-                        tension: 0.3,
+                        borderColor: '#333', tension: 0.3,
                         pointRadius: 7,
                         pointBackgroundColor: data.map(d => slaColor(d.sla_percent)),
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        borderWidth: 2.5
+                        pointBorderColor: '#fff', pointBorderWidth: 2, borderWidth: 2.5
                     },
                     {
-                        label: 'ממוצע 2025',
                         data: data.map(d => d.sla_2025),
-                        borderColor: '#999',
-                        tension: 0.3,
+                        borderColor: '#999', tension: 0.3,
                         pointRadius: 6,
                         pointBackgroundColor: data.map(d => slaColor(d.sla_2025)),
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        borderWidth: 2,
-                        borderDash: [6, 3]
+                        pointBorderColor: '#fff', pointBorderWidth: 2,
+                        borderWidth: 2, borderDash: [6, 3]
                     },
                     {
-                        label: 'יעד תקן 80%',
                         data: data.map(() => 80),
-                        borderColor: '#C62828',
-                        borderDash: [8, 4],
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        fill: false
+                        borderColor: '#C62828', borderDash: [8, 4],
+                        borderWidth: 2, pointRadius: 0, fill: false
                     }
                 ]
             },
@@ -269,8 +237,8 @@ const Charts = {
                     }
                 },
                 scales: {
-                    y: { min: 50, max: 102, grid: { color: '#F0EBE0' } },
-                    x: { grid: { display: false } }
+                    y: { min: 50, max: 102, grid: { color: '#F0EBE0' }, title: axisTitle('% עמידה בתקן') },
+                    x: { grid: { display: false }, title: axisTitle('מנהל') }
                 }
             }
         });
@@ -287,17 +255,13 @@ const Charts = {
             data: {
                 labels: sorted.map(d => d.name),
                 datasets: [{
-                    label: 'סה"כ פניות',
                     data: sorted.map(d => d.total_calls),
                     borderColor: '#333',
                     backgroundColor: 'rgba(0,0,0,0.04)',
-                    fill: true,
-                    tension: 0.3,
+                    fill: true, tension: 0.3,
                     pointRadius: 6,
                     pointBackgroundColor: sorted.map(d => slaColor(d.sla_percent)),
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    borderWidth: 2
+                    pointBorderColor: '#fff', pointBorderWidth: 2, borderWidth: 2
                 }]
             },
             options: {
@@ -310,14 +274,14 @@ const Charts = {
                                 const d = sorted[ctx.dataIndex];
                                 const pct = ((d.total_calls / totalAll) * 100).toFixed(1);
                                 const pop = d.population ? ` | ${d.population.toLocaleString()} תושבים` : '';
-                                return `${d.total_calls.toLocaleString()} פניות (${pct}% מסה"כ) | תקן: ${d.sla_percent}%${pop}`;
+                                return `${d.total_calls.toLocaleString()} פניות (${pct}% מכלל הפניות) | תקן: ${d.sla_percent}%${pop}`;
                             }
                         }
                     }
                 },
                 scales: {
-                    y: { beginAtZero: true, grid: { color: '#F0EBE0' } },
-                    x: { grid: { display: false }, ticks: { font: { size: 9 }, maxRotation: 60, minRotation: 40 } }
+                    y: { beginAtZero: true, grid: { color: '#F0EBE0' }, title: axisTitle('כמות פניות') },
+                    x: { grid: { display: false }, ticks: { font: { size: 9 }, maxRotation: 60, minRotation: 40 }, title: axisTitle('רובע') }
                 }
             }
         });

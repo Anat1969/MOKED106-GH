@@ -128,16 +128,14 @@ tbody tr:last-child td { border-bottom: none; }
 /* Heatmap */
 .heatmap-container { overflow-x: auto; }
 .heatmap th, .heatmap td {
-    text-align: center; padding: 0.45rem 0.5rem; font-size: 0.8rem; min-width: 48px;
+    text-align: center; padding: 0.3rem 0.35rem; font-size: 0.7rem; min-width: 38px;
 }
 .heatmap th:first-child, .heatmap td:first-child {
-    text-align: right; min-width: 110px;
+    text-align: right; min-width: 90px;
     position: sticky; right: 0; background: inherit; z-index: 1;
 }
 .heatmap thead th:first-child { background: var(--primary); }
-.heatmap tbody tr:nth-child(even) { background: #FAFAF5; }
-.heatmap tbody tr:nth-child(even) td:first-child { background: #FAFAF5; }
-.heatmap tbody tr:nth-child(odd) td:first-child { background: var(--card-bg); }
+.heatmap tbody tr td:first-child { background: var(--card-bg); }
 .heat-high { background: var(--yellow) !important; font-weight: 700; }
 .heat-medium { background: var(--yellow-light) !important; }
 .heatmap .total-col { font-weight: 700; background: #F0EBE0 !important; }

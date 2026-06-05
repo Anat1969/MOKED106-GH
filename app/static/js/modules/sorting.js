@@ -13,15 +13,15 @@ const Sorting = {
         const tbody = table.querySelector('tbody');
         const rows = Array.from(tbody.querySelectorAll('tr'));
 
-        // Determine direction
-        const isAsc = th.classList.contains('sort-asc');
-        const dir = isAsc ? -1 : 1;
+        // First click = descending (large to small), then toggle
+        const isDesc = th.classList.contains('sort-desc');
+        const dir = isDesc ? 1 : -1;
 
         // Clear all sort classes in this table
         table.querySelectorAll('th').forEach(h => {
             h.classList.remove('sort-asc', 'sort-desc');
         });
-        th.classList.add(dir === 1 ? 'sort-asc' : 'sort-desc');
+        th.classList.add(dir === -1 ? 'sort-desc' : 'sort-asc');
 
         // Skip total/summary rows (last row if it has class total-row)
         const sortableRows = rows.filter(r => !r.classList.contains('total-row'));
