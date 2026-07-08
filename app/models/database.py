@@ -1,7 +1,11 @@
 import sqlite3
 import os
 
-DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'moked106.db')
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+DEFAULT_DB_PATH = os.path.join(BASE_DIR, 'moked106.db')
+IS_VERCEL = os.environ.get('VERCEL') == '1' or os.environ.get('VERCEL_ENV') is not None
+DB_PATH = os.environ.get('DATABASE_PATH') or (os.path.join('/tmp', 'moked106.db') if IS_VERCEL else DEFAULT_DB_PATH)
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
