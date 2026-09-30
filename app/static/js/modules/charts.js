@@ -31,6 +31,7 @@ Chart.register(slaZonesPlugin);
 
 const Charts = {
     instances: {},
+    labels: { current: '', prevYear: '' },   // set per displayed month
 
     destroy(id) {
         if (this.instances[id]) { this.instances[id].destroy(); delete this.instances[id]; }
@@ -92,7 +93,7 @@ const Charts = {
                             label: (ctx) => {
                                 const d = data[ctx.dataIndex];
                                 const pct = ((d.total_calls / totalAll) * 100).toFixed(1);
-                                return `${d.total_calls.toLocaleString()} פניות (${pct}% מכלל הפניות) | תקן: ${d.sla_percent}% | זמן תקן: ${d.sla_time || '—'}`;
+                                return `${d.total_calls.toLocaleString()} פניות (${pct}% מכלל הפניות) | תקן: ${d.sla_percent}% | זמן תקן: ${formatSlaTime(d.sla_time)}`;
                             }
                         }
                     }
@@ -230,7 +231,7 @@ const Charts = {
                                 if (ctx.datasetIndex === 2) return 'יעד: 80%';
                                 const d = data[ctx.dataIndex];
                                 const val = ctx.datasetIndex === 0 ? d.sla_percent : d.sla_2025;
-                                const period = ctx.datasetIndex === 0 ? 'מאי 2026' : '2025';
+                                const period = ctx.datasetIndex === 0 ? Charts.labels.current : Charts.labels.prevYear;
                                 return `${d.name} (${period}): ${val}%`;
                             }
                         }

@@ -1,5 +1,6 @@
 const Heatmap = {
-    render(data) {
+    // streetTrend: { label, byStreet: { name: change|null } } when the previous month's heatmap is comparable
+    render(data, streetTrend) {
         const { issues, data: rows } = data;
         const thead = document.querySelector('#heatmapTable thead');
         const tbody = document.querySelector('#heatmapTable tbody');
@@ -14,6 +15,7 @@ const Heatmap = {
             <th data-col="0" data-type="string">רחוב / נושא <span class="sort-icon">⇅</span></th>
             ${issues.map((issue, i) => `<th data-col="${i + 1}" data-type="number">${issue} <span class="sort-icon">⇅</span></th>`).join('')}
             <th data-col="${issues.length + 1}" data-type="number">סה"כ <span class="sort-icon">⇅</span></th>
+            ${streetTrend ? `<th data-col="${issues.length + 2}" data-type="number" class="trend-th">מול ${streetTrend.label}</th>` : ''}
         </tr>`;
 
         const totals = {};
@@ -39,6 +41,8 @@ const Heatmap = {
                     return `<td class="${cls}">${val || ''}</td>`;
                 }).join('')}
                 <td class="total-col">${rowTotal}</td>
+                ${streetTrend ? `<td data-sort="${streetTrend.byStreet[row.street]?.diff ?? ''}">${streetTrend.byStreet[row.street]
+                    ? trendCell(streetTrend.byStreet[row.street]) : '<span class="trend none" title="הרחוב לא הופיע במפת החום של החודש הקודם">חדש ברשימה</span>'}</td>` : ''}
             </tr>`;
         }).join('');
 
@@ -46,6 +50,7 @@ const Heatmap = {
             <td><strong>סכום כולל</strong></td>
             ${issues.map(i => `<td class="total-col">${totals[i]}</td>`).join('')}
             <td class="total-col"><strong>${grandTotal}</strong></td>
+            ${streetTrend ? '<td></td>' : ''}
         </tr>`;
     }
 };

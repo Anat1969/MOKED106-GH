@@ -11,340 +11,340 @@
  "exported_on": "2026-09-30",
  "min_cell_size": 5,
  "city": {
-  "total_cases": 21478,
-  "on_time_rate": 90.7,
-  "reopened_rate": 5.1
+  "total_cases": 19966,
+  "on_time_rate": 91.1,
+  "reopened_rate": 6.1
  },
  "departments": {
-  "total": 21478,
+  "total": 19966,
   "suppressed_total": 0,
   "rows": [
    {
     "name": "תפעול",
-    "cases": 16446,
-    "on_time_rate": 91.8
+    "cases": 15289,
+    "on_time_rate": 93.0
    },
    {
     "name": "יח' מנכ\"ל",
-    "cases": 3150,
-    "on_time_rate": 85.8
+    "cases": 2928,
+    "on_time_rate": 82.5
    },
    {
     "name": "הנדסה",
-    "cases": 1226,
-    "on_time_rate": 90.2
+    "cases": 1140,
+    "on_time_rate": 89.3
    },
    {
     "name": "חינוך",
-    "cases": 412,
-    "on_time_rate": 92.2
+    "cases": 383,
+    "on_time_rate": 87.9
    },
    {
     "name": "רווחה",
-    "cases": 197,
-    "on_time_rate": 77.8
+    "cases": 183,
+    "on_time_rate": 81.4
    },
    {
     "name": "גזברות",
-    "cases": 37,
-    "on_time_rate": 99.6
+    "cases": 34,
+    "on_time_rate": 98.8
    },
    {
     "name": "מינהל כללי",
-    "cases": 10,
-    "on_time_rate": 89.6
+    "cases": 9,
+    "on_time_rate": 90.0
    }
   ]
  },
  "neighborhoods": {
-  "total": 21478,
+  "total": 19966,
   "suppressed_total": 0,
   "rows": [
    {
-    "name": "רובע א",
-    "cases": 1406,
-    "on_time_rate": 91.5,
-    "reopened_rate": 5.8
-   },
-   {
-    "name": "רובע ב",
-    "cases": 1076,
-    "on_time_rate": 92.4,
-    "reopened_rate": 5.0
-   },
-   {
-    "name": "רובע ג",
-    "cases": 1231,
-    "on_time_rate": 92.2,
-    "reopened_rate": 4.4
-   },
-   {
-    "name": "רובע ד",
-    "cases": 946,
-    "on_time_rate": 91.6,
-    "reopened_rate": 4.7
-   },
-   {
-    "name": "רובע ה",
-    "cases": 745,
-    "on_time_rate": 91.4,
-    "reopened_rate": 5.2
-   },
-   {
-    "name": "רובע הסיטי",
-    "cases": 1074,
-    "on_time_rate": 88.0,
-    "reopened_rate": 5.6
-   },
-   {
-    "name": "רובע הקריה",
-    "cases": 207,
-    "on_time_rate": 87.7,
-    "reopened_rate": 6.6
-   },
-   {
-    "name": "רובע ו",
-    "cases": 978,
-    "on_time_rate": 93.6,
-    "reopened_rate": 3.9
-   },
-   {
-    "name": "רובע ז",
-    "cases": 1001,
-    "on_time_rate": 94.4,
-    "reopened_rate": 3.7
-   },
-   {
-    "name": "רובע ח",
-    "cases": 852,
-    "on_time_rate": 88.3,
-    "reopened_rate": 5.7
-   },
-   {
-    "name": "רובע ט",
-    "cases": 832,
-    "on_time_rate": 90.4,
-    "reopened_rate": 4.5
-   },
-   {
-    "name": "רובע ט\"ו",
-    "cases": 871,
-    "on_time_rate": 90.6,
-    "reopened_rate": 5.4
-   },
-   {
-    "name": "רובע ט\"ז",
-    "cases": 343,
-    "on_time_rate": 91.1,
-    "reopened_rate": 4.7
-   },
-   {
-    "name": "רובע י",
-    "cases": 411,
-    "on_time_rate": 92.2,
-    "reopened_rate": 4.3
-   },
-   {
-    "name": "רובע י\"א",
-    "cases": 956,
-    "on_time_rate": 94.8,
-    "reopened_rate": 4.5
-   },
-   {
-    "name": "רובע י\"ב",
-    "cases": 604,
-    "on_time_rate": 86.4,
-    "reopened_rate": 6.9
-   },
-   {
-    "name": "רובע י\"ג",
-    "cases": 619,
-    "on_time_rate": 95.1,
-    "reopened_rate": 4.5
-   },
-   {
-    "name": "רובע י\"ז",
-    "cases": 449,
-    "on_time_rate": 91.3,
-    "reopened_rate": 4.2
-   },
-   {
-    "name": "רובע מיוחד",
-    "cases": 130,
-    "on_time_rate": 82.9,
-    "reopened_rate": 8.2
-   },
-   {
-    "name": "רובע פארק לכיש",
-    "cases": 170,
-    "on_time_rate": 82.5,
-    "reopened_rate": 8.2
-   },
-   {
-    "name": "מע\"ר דרום",
-    "cases": 212,
-    "on_time_rate": 89.3,
-    "reopened_rate": 5.4
-   },
-   {
-    "name": "מרינה",
-    "cases": 275,
-    "on_time_rate": 86.9,
-    "reopened_rate": 7.0
-   },
-   {
-    "name": "רצועת החוף",
-    "cases": 355,
-    "on_time_rate": 73.6,
-    "reopened_rate": 10.2
-   },
-   {
-    "name": "חוף הים",
-    "cases": 84,
-    "on_time_rate": 82.9,
-    "reopened_rate": 7.1
-   },
-   {
-    "name": "אשדוד ים",
-    "cases": 34,
-    "on_time_rate": 73.4,
-    "reopened_rate": 9.0
-   },
-   {
     "name": "אזור התעשיה הכבדה",
-    "cases": 238,
-    "on_time_rate": 82.9,
-    "reopened_rate": 6.9
+    "cases": 219,
+    "on_time_rate": 84.4,
+    "reopened_rate": 6.7
    },
    {
     "name": "אזור התעשיה הצפונית",
-    "cases": 247,
-    "on_time_rate": 78.9,
-    "reopened_rate": 8.0
+    "cases": 229,
+    "on_time_rate": 84.3,
+    "reopened_rate": 6.9
    },
    {
     "name": "אזור התעשיה הקלה",
-    "cases": 189,
-    "on_time_rate": 84.8,
+    "cases": 176,
+    "on_time_rate": 82.8,
+    "reopened_rate": 8.1
+   },
+   {
+    "name": "אשדוד ים",
+    "cases": 31,
+    "on_time_rate": 76.2,
+    "reopened_rate": 8.4
+   },
+   {
+    "name": "חוף הים",
+    "cases": 330,
+    "on_time_rate": 73.0,
+    "reopened_rate": 10.3
+   },
+   {
+    "name": "מע\"ר דרום",
+    "cases": 197,
+    "on_time_rate": 89.9,
+    "reopened_rate": 6.5
+   },
+   {
+    "name": "מרינה",
+    "cases": 256,
+    "on_time_rate": 88.4,
+    "reopened_rate": 4.9
+   },
+   {
+    "name": "רובע א",
+    "cases": 1309,
+    "on_time_rate": 89.9,
+    "reopened_rate": 6.7
+   },
+   {
+    "name": "רובע ב",
+    "cases": 1000,
+    "on_time_rate": 93.9,
+    "reopened_rate": 4.8
+   },
+   {
+    "name": "רובע ג",
+    "cases": 1144,
+    "on_time_rate": 89.6,
+    "reopened_rate": 5.4
+   },
+   {
+    "name": "רובע ד",
+    "cases": 880,
+    "on_time_rate": 90.5,
+    "reopened_rate": 5.0
+   },
+   {
+    "name": "רובע ה",
+    "cases": 692,
+    "on_time_rate": 90.2,
+    "reopened_rate": 4.4
+   },
+   {
+    "name": "רובע הסיטי",
+    "cases": 998,
+    "on_time_rate": 88.9,
+    "reopened_rate": 6.1
+   },
+   {
+    "name": "רובע הקריה",
+    "cases": 192,
+    "on_time_rate": 86.0,
+    "reopened_rate": 5.5
+   },
+   {
+    "name": "רובע ו",
+    "cases": 909,
+    "on_time_rate": 90.4,
+    "reopened_rate": 5.8
+   },
+   {
+    "name": "רובע ז",
+    "cases": 931,
+    "on_time_rate": 90.7,
+    "reopened_rate": 5.5
+   },
+   {
+    "name": "רובע ח",
+    "cases": 792,
+    "on_time_rate": 92.6,
+    "reopened_rate": 4.3
+   },
+   {
+    "name": "רובע ט",
+    "cases": 774,
+    "on_time_rate": 93.9,
+    "reopened_rate": 3.4
+   },
+   {
+    "name": "רובע ט\"ו",
+    "cases": 810,
+    "on_time_rate": 86.5,
+    "reopened_rate": 6.3
+   },
+   {
+    "name": "רובע ט\"ז",
+    "cases": 319,
+    "on_time_rate": 89.2,
+    "reopened_rate": 5.7
+   },
+   {
+    "name": "רובע י",
+    "cases": 382,
+    "on_time_rate": 87.5,
+    "reopened_rate": 6.6
+   },
+   {
+    "name": "רובע י\"א",
+    "cases": 888,
+    "on_time_rate": 88.2,
     "reopened_rate": 5.9
    },
    {
+    "name": "רובע י\"ב",
+    "cases": 562,
+    "on_time_rate": 88.0,
+    "reopened_rate": 5.4
+   },
+   {
+    "name": "רובע י\"ג",
+    "cases": 576,
+    "on_time_rate": 93.7,
+    "reopened_rate": 4.4
+   },
+   {
+    "name": "רובע י\"ז",
+    "cases": 418,
+    "on_time_rate": 93.2,
+    "reopened_rate": 4.6
+   },
+   {
+    "name": "רובע מיוחד",
+    "cases": 121,
+    "on_time_rate": 86.8,
+    "reopened_rate": 5.5
+   },
+   {
+    "name": "רובע פארק לכיש",
+    "cases": 158,
+    "on_time_rate": 85.4,
+    "reopened_rate": 7.7
+   },
+   {
+    "name": "רצועת החוף",
+    "cases": 78,
+    "on_time_rate": 80.7,
+    "reopened_rate": 8.2
+   },
+   {
     "name": "תעשיות עורף הנמל",
-    "cases": 59,
-    "on_time_rate": 79.2,
-    "reopened_rate": 9.2
+    "cases": 55,
+    "on_time_rate": 80.9,
+    "reopened_rate": 8.1
    },
    {
     "name": "ללא שיוך לרובע",
-    "cases": 4884,
+    "cases": 4540,
     "on_time_rate": null,
     "reopened_rate": null
    }
   ]
  },
  "topics": {
-  "total": 21478,
+  "total": 19966,
   "suppressed_total": 0,
   "rows": [
    {
     "id": "פינוי אשפה ביתית",
     "name": "פינוי אשפה ביתית",
     "department": "שרותי אשפה",
-    "standard_hours": 16.0,
+    "standard_hours": 16,
     "standard_text": "16 שעות",
-    "cases": 1843,
-    "on_time_rate": 85.5,
-    "reopened_rate": 7.4
+    "cases": 1217,
+    "on_time_rate": 90.2,
+    "reopened_rate": 5.2
    },
    {
     "id": "רכב נטוש-עם מספרים",
     "name": "רכב נטוש-עם מספרים",
     "department": "פיקוח עירוני",
-    "standard_hours": 1440.0,
+    "standard_hours": 1440,
     "standard_text": "60 ימים",
-    "cases": 543,
-    "on_time_rate": 99.4,
-    "reopened_rate": 4.3
+    "cases": 669,
+    "on_time_rate": 100.0,
+    "reopened_rate": 4.0
    },
    {
     "id": "גזם וגרוטאות לפינוי מנוף",
     "name": "גזם וגרוטאות לפינוי מנוף",
     "department": "שרותי ניקיון",
-    "standard_hours": 48.0,
+    "standard_hours": 48,
     "standard_text": "יומיים",
-    "cases": 594,
-    "on_time_rate": 94.3,
-    "reopened_rate": 4.0
+    "cases": 547,
+    "on_time_rate": 100.0,
+    "reopened_rate": 3.9
    },
    {
     "id": "חיות פצועות",
     "name": "חיות פצועות",
     "department": "וטרינר",
-    "standard_hours": 24.0,
+    "standard_hours": 24,
     "standard_text": "יום",
-    "cases": 658,
+    "cases": 573,
     "on_time_rate": 100.0,
-    "reopened_rate": 3.7
+    "reopened_rate": 2.9
    },
    {
     "id": "בעיות ריצוף",
     "name": "בעיות ריצוף",
     "department": "אחזקת דרכים",
-    "standard_hours": 336.0,
+    "standard_hours": 336,
     "standard_text": "14 ימים",
-    "cases": 456,
-    "on_time_rate": 86.2,
-    "reopened_rate": 7.6
+    "cases": 243,
+    "on_time_rate": 92.1,
+    "reopened_rate": 5.2
    },
    {
     "id": "רכב חונה חוסם",
     "name": "רכב חונה חוסם",
     "department": "פיקוח חניה",
-    "standard_hours": 2.0,
+    "standard_hours": 2,
     "standard_text": "שעתיים",
-    "cases": 537,
-    "on_time_rate": 100.0,
-    "reopened_rate": 3.0
+    "cases": 473,
+    "on_time_rate": 99.8,
+    "reopened_rate": 3.1
    },
    {
     "id": "יתושים",
     "name": "יתושים",
     "department": "הדברה",
-    "standard_hours": 48.0,
+    "standard_hours": 48,
     "standard_text": "יומיים",
-    "cases": 333,
-    "on_time_rate": 84.6,
-    "reopened_rate": 7.9
+    "cases": 334,
+    "on_time_rate": 82.2,
+    "reopened_rate": 8.1
    },
    {
     "id": "טפטפת / צינור השקיה קרוע",
     "name": "טפטפת / צינור השקיה קרוע",
     "department": "נטיעות אחזקה",
-    "standard_hours": 6.0,
+    "standard_hours": 6,
     "standard_text": "6 שעות",
-    "cases": 333,
-    "on_time_rate": 48.3,
+    "cases": 311,
+    "on_time_rate": 44.4,
     "reopened_rate": 12.0
    },
    {
     "id": "מפגעי קבלן אשפה כללי",
     "name": "מפגעי קבלן אשפה כללי",
     "department": "שרותי אשפה",
-    "standard_hours": 720.0,
+    "standard_hours": 720,
     "standard_text": "30 ימים",
-    "cases": 368,
-    "on_time_rate": 98.6,
-    "reopened_rate": 4.5
+    "cases": 204,
+    "on_time_rate": 99.4,
+    "reopened_rate": 2.8
    },
    {
     "id": "ניקיון רחובות",
     "name": "ניקיון רחובות",
     "department": "שרותי ניקיון",
-    "standard_hours": 48.0,
+    "standard_hours": 48,
     "standard_text": "יומיים",
-    "cases": 267,
-    "on_time_rate": 100.0,
-    "reopened_rate": 3.0
+    "cases": 297,
+    "on_time_rate": 97.8,
+    "reopened_rate": 3.1
    },
    {
     "id": "other",
@@ -352,7 +352,7 @@
     "department": null,
     "standard_hours": null,
     "standard_text": null,
-    "cases": 15546,
+    "cases": 15098,
     "on_time_rate": null,
     "reopened_rate": null
    }

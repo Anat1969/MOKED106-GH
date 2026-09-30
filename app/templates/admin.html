@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מוקד 106 – העלאת דוח חודשי</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>מוקד עירוני 106 — העלאת דוח חודשי</h1>
+            <div class="header-meta">
+                <a class="header-btn" href="/">חזרה לדשבורד</a>
+                <a class="header-btn gold" href="/shkifut/" target="_blank" rel="noopener">דף השקיפות לציבור</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin">
+        <p id="storageNotice" class="admin-notice" hidden></p>
+
+        <!-- Password -->
+        <section class="admin-card" id="authCard">
+            <h2 id="authTitle">כניסת מנהל</h2>
+            <p id="authIntro" class="muted">כדי לשמור דוח צריך סיסמת מנהל. אפשר לבדוק קבצים גם בלי סיסמה.</p>
+            <form id="authForm" autocomplete="off">
+                <label>סיסמה <input type="password" id="pw1" autocomplete="current-password" minlength="10" required></label>
+                <label id="pw2Row" hidden>שוב, לאימות <input type="password" id="pw2" autocomplete="new-password" minlength="10"></label>
+                <button type="submit" class="btn active" id="authBtn">כניסה</button>
+                <span id="authMsg" class="form-msg" aria-live="polite"></span>
+            </form>
+        </section>
+
+        <!-- Upload -->
+        <section class="admin-card">
+            <h2>1. בחירת קבצים</h2>
+            <p class="muted">דוח המנכ"ל החודשי (pptx) — חובה. קובץ "10 נושאים לפי רחובות" (xlsx) — מומלץ, בשביל מגמות לפי רחוב. אפשר לגרור לכאן, ללחוץ, או להדביק.</p>
+            <div id="dropZone" class="drop-zone" tabindex="0" role="button" aria-label="בחירת קבצים">
+                <input type="file" id="fileInput" accept=".pptx,.xlsx,.xls" multiple hidden>
+                <strong>גררי לכאן את הקבצים</strong><span>או לחצי לבחירה</span>
+            </div>
+            <ul id="fileList" class="file-list"></ul>
+        </section>
+
+        <section class="admin-card" id="checkCard" hidden>
+            <h2>2. בדיקת התאמה</h2>
+            <div id="detected" class="detected"></div>
+            <div id="keyNumbers" class="key-numbers"></div>
+            <div id="checks"></div>
+        </section>
+
+        <section class="admin-card" id="saveCard" hidden>
+            <h2>3. שמירה</h2>
+            <label class="ack" id="ackRow" hidden><input type="checkbox" id="ack"> קראתי את ההערות בצהוב — אלה פערים בדוח המקור, ואני מאשרת לשמור</label>
+            <label>הערה לגרסה (לא חובה) <input type="text" id="note" maxlength="200" placeholder="למשל: גרסה מתוקנת אחרי עדכון מחלקת תפעול"></label>
+            <button type="button" class="btn active" id="saveBtn" disabled>שמירה ופרסום</button>
+            <p id="saveMsg" class="form-msg" aria-live="polite"></p>
+        </section>
+
+        <!-- Versions -->
+        <section class="admin-card">
+            <h2>גרסאות לפי חודש</h2>
+            <p class="muted">כל העלאה נשמרת כגרסה נפרדת — שום דבר לא נמחק. הדשבורד ודף השקיפות מציגים את הגרסה הפעילה.</p>
+            <div id="versions"></div>
+        </section>
+    </main>
+
+    <script src="/static/js/core/moked-core.js"></script>
+    <script src="/static/js/modules/api.js"></script>
+    <script src="/static/js/modules/tables.js"></script>
+    <script src="/static/js/modules/map.js"></script>
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>

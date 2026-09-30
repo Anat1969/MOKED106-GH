@@ -1,5 +1,6 @@
-"""Fill the 11 months before the latest real export with DEMO data, and add a demo
-reopened-case rate, so the 12-month trend can be shown before real history exists.
+"""Fill the 11 months before the latest real month with DEMO data (including a demo
+reopened-case rate), so the 12-month trend can be shown before real history exists.
+The real month itself is never modified.
 
 Every generated file is marked data_status="demo"; the page labels it clearly.
 Delete these files (and stop running this script) once real monthly exports accumulate.
@@ -10,10 +11,51 @@ import copy
 import json
 import os
 import random
-import sys
+from datetime import date
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from export_public_data import OUT_DIR, UNASSIGNED, month_label, rebuild_index, suppress  # noqa: E402
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUT_DIR = os.path.join(ROOT, 'transparency', 'public_data')
+MIN_CELL = 5
+UNASSIGNED = 'ללא שיוך לרובע'
+HEB_MONTHS = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי',
+              'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר']
+
+
+def month_label(ym):
+    y, m = ym.split('-')
+    return f'{HEB_MONTHS[int(m) - 1]} {y}'
+
+
+def suppress(rows, total):
+    """Same rule as MokedCore.suppress: hide cells under MIN_CELL plus one complementary cell."""
+    small = [r for r in rows if r['cases'] < MIN_CELL]
+    if len(small) == 1:
+        rest = sorted((r for r in rows if r['cases'] >= MIN_CELL and r['name'] != UNASSIGNED),
+                      key=lambda r: r['cases'])
+        if rest:
+            small.append(rest[0])
+    hidden = 0
+    for r in small:
+        hidden += r['cases']
+        for k in list(r):
+            if k not in ('id', 'name', 'department'):
+                r[k] = None
+        r['suppressed'] = True
+    return {'total': total, 'suppressed_total': hidden, 'rows': rows}
+
+
+def rebuild_index():
+    months = []
+    for fn in sorted(os.listdir(OUT_DIR)):
+        if fn == 'index.json' or not fn.endswith('.json'):
+            continue
+        with open(os.path.join(OUT_DIR, fn), encoding='utf-8') as f:
+            d = json.load(f)
+        months.append({'month': d['month'], 'month_label': d['month_label'], 'data_status': d['data_status'],
+                       'total_cases': d['city']['total_cases'], 'on_time_rate': d['city']['on_time_rate']})
+    index = {'latest': months[-1]['month'], 'updated_on': date.today().isoformat(), 'months': months}
+    with open(os.path.join(OUT_DIR, 'index.json'), 'w', encoding='utf-8') as f:
+        json.dump(index, f, ensure_ascii=False, indent=1)
 
 ANCHORS = {'2026-04': (18711, 91.9)}
 
@@ -79,14 +121,11 @@ def main():
         latest = json.load(f)
 
     rnd = random.Random(106)
-    if latest['provenance']['reopened_rate'] != 'real':
-        add_reopened(latest, rnd)
-        with open(os.path.join(OUT_DIR, f'{latest_ym}.json'), 'w', encoding='utf-8') as f:
-            json.dump(latest, f, ensure_ascii=False, indent=1)
 
     for back in range(1, 12):
         ym = prev_month(latest_ym, back)
         d = copy.deepcopy(latest)
+        d['city']['reopened_rate'] = 0  # placeholder; demo value set by add_reopened
         total, city_rate = ANCHORS.get(ym, (round(latest['city']['total_cases'] * rnd.uniform(0.82, 1.08)), None))
 
         depts = unsuppress(latest['departments'])

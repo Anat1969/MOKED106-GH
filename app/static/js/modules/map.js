@@ -27,17 +27,24 @@ const MapView = {
         'העצמאות': [31.7905611, 34.6474458],
     },
 
-    ISSUE_SLA: {
-        'בדיקת ביוב': 95.8,
-        'בעיות ריצוף': 87.3,
-        'גזם וגרוטאות לפינוי מנוף': 97.8,
-        'חיות פצועות': 100.0,
-        'טפטפת / צינור השקיה קרוע': 45.6,
-        'ניקיון רחובות': 97.2,
-        'פינוי אשפה ביתית': 85.7,
-        'פינוי פגר': 86.4,
-        'רכב חונה חוסם': 98.8,
-        'רכב נטוש-עם מספרים': 100.0,
+    ISSUE_SLA: {},      // topic -> on-time %, taken from the displayed month
+    extraCoords: {},    // streets geocoded after uploads (storage geo/streets.json)
+
+    // Called on every month switch
+    setMonth(heatmapData, month, extraCoords) {
+        this.extraCoords = extraCoords || {};
+        const issues = [...(month.issues_core || []), ...(month.issues_top || []), ...(month.issues_below80 || [])];
+        this.ISSUE_SLA = {};
+        for (const topic of heatmapData.issues) {
+            const t = issues.find(x => MokedCore.sameTopic(x.issue_name, topic));
+            if (t) this.ISSUE_SLA[topic] = t.sla_percent;
+        }
+        this.pending = heatmapData;
+        if (this.map) { this.processData(heatmapData); this.renderMarkers(); }
+    },
+
+    coordsFor(name) {
+        return this.STREET_COORDS[name] || this.extraCoords[name] || null;
     },
 
     init(heatmapData) {
@@ -59,7 +66,7 @@ const MapView = {
         const { data } = heatmapData;
 
         this.allStreetData = data.map(row => {
-            const coords = this.STREET_COORDS[row.street];
+            const coords = this.coordsFor(row.street);
             if (!coords) return null;
             const total = row.total || 0;
 

@@ -5,10 +5,14 @@ const Sidebar = {
         this.el = document.getElementById('sidebarRef');
     },
 
+    stats: null,     // per displayed month, set by app.js
+    tab: 'overview',
+
     update(tab) {
-        if (!this.el) return;
-        const content = this.content[tab] || this.content['overview'];
-        this.el.innerHTML = content;
+        if (tab) this.tab = tab;
+        if (!this.el || !this.stats) return;
+        const content = this.content[this.tab] || this.content['overview'];
+        this.el.innerHTML = content(this.stats);
     },
 
     colorLegend: `
@@ -22,7 +26,7 @@ const Sidebar = {
         </div>`,
 
     content: {
-        overview: `
+        overview: s => `
             <div class="sb-section">
                 <div class="sb-title">מקרא צבעים — תקן</div>
                 <div class="sb-row"><span class="sb-dot" style="background:#2E7D32"></span> 90% ומעלה</div>
@@ -34,22 +38,22 @@ const Sidebar = {
             <div class="sb-section">
                 <div class="sb-title">תקנים וקבועים</div>
                 <div class="sb-item"><span class="sb-val">80%</span> — יעד עמידה בתקן לכל מנהל</div>
-                <div class="sb-item"><span class="sb-val">21,084</span> — סה"כ פניות מאי 2026</div>
-                <div class="sb-item"><span class="sb-val">7</span> — מנהלים</div>
-                <div class="sb-item"><span class="sb-val">8</span> — מחלקות מובילות (53%)</div>
+                <div class="sb-item"><span class="sb-val">${s.total}</span> — סה"כ פניות ${s.monthLabel}</div>
+                <div class="sb-item"><span class="sb-val">${s.managersCount}</span> — מנהלים</div>
+                <div class="sb-item"><span class="sb-val">${s.deptCount}</span> — מחלקות מובילות (${s.deptShare})</div>
             </div>
             <div class="sb-section">
                 <div class="sb-title">הנחות יסוד</div>
-                <div class="sb-item">תקופת דיווח: 1.5–31.5.2026</div>
-                <div class="sb-item">חודש קודם לצורך השוואה: אפריל 2026</div>
+                <div class="sb-item">תקופת דיווח: ${s.period}</div>
+                <div class="sb-item">השוואה לחודש קודם: ${s.prevNote}</div>
             </div>
             <div class="sb-section">
                 <div class="sb-title">מקור</div>
-                <div class="sb-item">דוח מוקד עירוני 106</div>
-                <div class="sb-item">מערכת CW</div>
+                <div class="sb-item">דוח מוקד עירוני 106, ${s.monthLabel}</div>
+                <div class="sb-item">${s.versionNote}</div>
             </div>`,
 
-        managers: `
+        managers: s => `
             <div class="sb-section">
                 <div class="sb-title">מקרא צבעים — תקן</div>
                 <div class="sb-row"><span class="sb-dot" style="background:#2E7D32"></span> 90% ומעלה</div>
@@ -65,20 +69,20 @@ const Sidebar = {
             </div>
             <div class="sb-section">
                 <div class="sb-title">קבועים</div>
-                <div class="sb-item"><span class="sb-val">7</span> מנהלים בסה"כ</div>
+                <div class="sb-item"><span class="sb-val">${s.managersCount}</span> מנהלים בסה"כ</div>
             </div>
             <div class="sb-section">
                 <div class="sb-title">סוגי קווים בגרף</div>
-                <div class="sb-row"><span class="sb-line-solid"></span> מאי 2026</div>
-                <div class="sb-row"><span class="sb-line-dashed-gray"></span> ממוצע 2025</div>
+                <div class="sb-row"><span class="sb-line-solid"></span> ${s.monthLabel}</div>
+                <div class="sb-row"><span class="sb-line-dashed-gray"></span> ממוצע ${s.prevYear}</div>
                 <div class="sb-row"><span class="sb-line-dashed-red"></span> יעד תקן 80%</div>
             </div>
             <div class="sb-section">
                 <div class="sb-title">מקור</div>
-                <div class="sb-item">דוח מנכ"ל מוקד עירוני, מאי 2026</div>
+                <div class="sb-item">דוח מנכ"ל מוקד עירוני, ${s.monthLabel}</div>
             </div>`,
 
-        departments: `
+        departments: s => `
             <div class="sb-section">
                 <div class="sb-title">מקרא צבעים — תקן</div>
                 <div class="sb-row"><span class="sb-dot" style="background:#2E7D32"></span> 90% ומעלה</div>
@@ -93,19 +97,20 @@ const Sidebar = {
             <div class="sb-section">
                 <div class="sb-title">עקרון 20/80</div>
                 <div class="sb-item">20% מהמחלקות מטפלות ב-80% מהפניות</div>
-                <div class="sb-item">8 מחלקות מובילות = <span class="sb-val">53%</span> מכלל הפניות</div>
+                <div class="sb-item">${s.deptCount} מחלקות מובילות = <span class="sb-val">${s.deptShare}</span> מכלל הפניות</div>
             </div>
             <div class="sb-section">
                 <div class="sb-title">שינוי חיובי / שלילי</div>
-                <div class="sb-row"><span class="sb-dot" style="background:#2E7D32"></span> שיפור מחודש קודם</div>
-                <div class="sb-row"><span class="sb-dot" style="background:#C62828"></span> ירידה מחודש קודם</div>
+                <div class="sb-row"><span class="trend good">▲</span> עלייה בעמידה בתקן = שיפור</div>
+                <div class="sb-row"><span class="trend bad">▲</span> עלייה בכמות פניות = החמרה</div>
+                <div class="sb-row"><span class="trend good">▼</span> ירידה בכמות פניות = שיפור</div>
             </div>
             <div class="sb-section">
                 <div class="sb-title">מקור</div>
-                <div class="sb-item">דוח 20/80 מוקד עירוני, מאי 2026</div>
+                <div class="sb-item">דוח 20/80 מוקד עירוני, ${s.monthLabel}</div>
             </div>`,
 
-        issues: `
+        issues: s => `
             <div class="sb-section">
                 <div class="sb-title">מקרא צבעים — תקן</div>
                 <div class="sb-row"><span class="sb-dot" style="background:#2E7D32"></span> 90% ומעלה</div>
@@ -120,22 +125,19 @@ const Sidebar = {
             </div>
             <div class="sb-section">
                 <div class="sb-title">קבועים</div>
-                <div class="sb-item">10 נושאים מובילים = <span class="sb-val">24.7%</span> מכלל הפניות</div>
-                <div class="sb-item">10 נושאים מתחת ל-80% = <span class="sb-val">6%</span> מכלל הפניות</div>
+                <div class="sb-item">${s.topCount} נושאים מובילים = <span class="sb-val">${s.topShare}</span> מכלל הפניות</div>
+                <div class="sb-item">${s.belowCount} נושאים מתחת ל-80% = <span class="sb-val">${s.belowShare}</span> מכלל הפניות</div>
             </div>
             <div class="sb-section">
                 <div class="sb-title">דוגמאות זמן תקן</div>
-                <div class="sb-item">פינוי אשפה ביתית: <span class="sb-val">16 דק'</span></div>
-                <div class="sb-item">רכב נטוש: <span class="sb-val">60 שעות</span></div>
-                <div class="sb-item">חיות פצועות: <span class="sb-val">1 שעה</span></div>
-                <div class="sb-item">טפטפת קרועה: <span class="sb-val">6 שעות</span></div>
+                ${s.slaExamples}
             </div>
             <div class="sb-section">
                 <div class="sb-title">מקור</div>
-                <div class="sb-item">דוח מוקד עירוני 106, מאי 2026</div>
+                <div class="sb-item">דוח מוקד עירוני 106, ${s.monthLabel}</div>
             </div>`,
 
-        heatmap: `
+        heatmap: s => `
             <div class="sb-section">
                 <div class="sb-title">מקרא טבלת חום</div>
                 <div class="sb-row"><span class="sb-dot" style="background:#FFD600"></span> 70%+ מהמקסימום בעמודה</div>
@@ -144,21 +146,21 @@ const Sidebar = {
             </div>
             <div class="sb-section">
                 <div class="sb-title">קבועים</div>
-                <div class="sb-item"><span class="sb-val">19</span> רחובות מובילים</div>
-                <div class="sb-item"><span class="sb-val">10</span> נושאים מובילים</div>
-                <div class="sb-item"><span class="sb-val">4,621</span> פניות בטבלה</div>
+                <div class="sb-item"><span class="sb-val">${s.heatStreets}</span> רחובות מובילים</div>
+                <div class="sb-item"><span class="sb-val">${s.heatTopics}</span> נושאים</div>
+                <div class="sb-item"><span class="sb-val">${s.heatTotal}</span> פניות בטבלה</div>
             </div>
             <div class="sb-section">
                 <div class="sb-title">הנחות</div>
-                <div class="sb-item">הטבלה מציגה רק רחובות עם ריבוי פניות (38+)</div>
+                <div class="sb-item">הטבלה מציגה רק רחובות עם ריבוי פניות (${s.heatMin}+)</div>
                 <div class="sb-item">צהוב מסמן מוקד בעיה גיאוגרפי</div>
             </div>
             <div class="sb-section">
                 <div class="sb-title">מקור</div>
-                <div class="sb-item">שקופית מפת חום — 10 נושאים מובילים, מאי 2026</div>
+                <div class="sb-item">${s.heatSource}, ${s.monthLabel}</div>
             </div>`,
 
-        map: `
+        map: s => `
             <div class="sb-section">
                 <div class="sb-title">מקרא מפה</div>
                 <div class="sb-row"><span class="sb-dot" style="background:#2E7D32"></span> מעט פניות</div>
@@ -185,10 +187,10 @@ const Sidebar = {
             <div class="sb-section">
                 <div class="sb-title">מקור</div>
                 <div class="sb-item">מיקומים: OpenStreetMap</div>
-                <div class="sb-item">נתונים: דוח מוקד 106, מאי 2026</div>
+                <div class="sb-item">נתונים: דוח מוקד 106, ${s.monthLabel}</div>
             </div>`,
 
-        districts: `
+        districts: s => `
             <div class="sb-section">
                 <div class="sb-title">מקרא צבעים — תקן</div>
                 <div class="sb-row"><span class="sb-dot" style="background:#2E7D32"></span> 90% ומעלה</div>
@@ -202,8 +204,8 @@ const Sidebar = {
             </div>
             <div class="sb-section">
                 <div class="sb-title">קבועים</div>
-                <div class="sb-item"><span class="sb-val">29</span> רובעים ואזורים</div>
-                <div class="sb-item"><span class="sb-val">18,710</span> סה"כ פניות (כולל כפולות)</div>
+                <div class="sb-item"><span class="sb-val">${s.districtsCount}</span> רובעים ואזורים</div>
+                <div class="sb-item"><span class="sb-val">${s.districtsTotal}</span> פניות משויכות לרובע (מתוך ${s.total})</div>
                 <div class="sb-item">פניות ל-100 תושבים = מדד עומס יחסי</div>
             </div>
             <div class="sb-section">
@@ -213,7 +215,7 @@ const Sidebar = {
             </div>
             <div class="sb-section">
                 <div class="sb-title">מקור</div>
-                <div class="sb-item">דוח מוקד 106 — פילוח רובעים, מאי 2026</div>
+                <div class="sb-item">דוח מוקד 106 — פילוח רובעים, ${s.monthLabel}</div>
             </div>`
     }
 };

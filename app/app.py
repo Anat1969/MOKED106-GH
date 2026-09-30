@@ -17,6 +17,10 @@ app.register_blueprint(api)
 def index():
     return send_from_directory('templates', 'index.html')
 
+@app.route('/admin')
+def admin():
+    return send_from_directory('templates', 'admin.html')
+
 # Always run on import (needed for gunicorn)
 init_db()
 

@@ -1,7 +1,10 @@
 const Sorting = {
     init() {
+        // Safe to call after every render: each header gets one listener only
         document.querySelectorAll('table.sortable').forEach(table => {
             table.querySelectorAll('thead tr:first-child th[data-col]').forEach(th => {
+                if (th.dataset.sortBound) return;
+                th.dataset.sortBound = '1';
                 th.addEventListener('click', () => this.sortTable(table, th));
             });
         });
@@ -28,12 +31,14 @@ const Sorting = {
         const fixedRows = rows.filter(r => r.classList.contains('total-row'));
 
         sortableRows.sort((a, b) => {
-            let aVal = a.cells[colIndex]?.textContent.trim() || '';
-            let bVal = b.cells[colIndex]?.textContent.trim() || '';
+            // data-sort holds the raw value when the cell also shows arrows or words
+            const raw = cell => cell?.dataset.sort ?? cell?.textContent.trim() ?? '';
+            let aVal = raw(a.cells[colIndex]);
+            let bVal = raw(b.cells[colIndex]);
 
             if (type === 'number') {
-                aVal = parseFloat(aVal.replace(/[,%+—]/g, '').replace('—', '')) || 0;
-                bVal = parseFloat(bVal.replace(/[,%+—]/g, '').replace('—', '')) || 0;
+                aVal = parseFloat(String(aVal).replace(/[,%+—]/g, '')) || 0;
+                bVal = parseFloat(String(bVal).replace(/[,%+—]/g, '')) || 0;
                 return (aVal - bVal) * dir;
             }
             return aVal.localeCompare(bVal, 'he') * dir;

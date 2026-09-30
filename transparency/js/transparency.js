@@ -1,6 +1,10 @@
-// Public transparency page. Reads ONLY the monthly aggregated export (public_data/)
-// and the editable content files (content/). Never calls the internal dashboard API.
+// Public transparency page. Reads ONLY monthly aggregated exports: the ones published
+// by the upload function (storage public/) and the bundled ones (public_data/, demo
+// history until real months accumulate), plus the editable content files (content/).
+// Never reads internal data.
 (() => {
+    const STORAGE_PUBLIC = 'https://cbhexpybdggwzyakgagd.supabase.co/storage/v1/object/authenticated/moked106/public/';
+    const STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiaGV4cHliZGdnd3p5YWtnYWdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NDkzMjksImV4cCI6MjA5MTMyNTMyOX0.X1b7pLyig-bGfxM7XjmwH0TqiuhqoS_o-Czg5qdsN6o';
     const GOAL = 80;              // minimum on-time rate the city reports against
     const TREND_MONTHS = 12;
     const IMPROVE_POINTS = 1;     // change (in points) that counts as "improving"/"declining"
@@ -18,18 +22,32 @@
 
     const state = { index: null, months: {}, actions: null, stories: null, current: null, hood: null, sort: 'cases' };
 
-    async function getJson(path) {
-        const r = await fetch(path, { cache: 'no-cache' });
+    async function getJson(path, headers) {
+        const r = await fetch(path, { cache: 'no-cache', headers });
         if (!r.ok) throw new Error(`${path}: ${r.status}`);
         return r.json();
     }
+    const storageJson = name => getJson(STORAGE_PUBLIC + name, { apikey: STORAGE_KEY, Authorization: `Bearer ${STORAGE_KEY}` });
 
     async function load() {
-        state.index = await getJson('public_data/index.json');
-        const files = await Promise.all(state.index.months.map(m => getJson(`public_data/${m.month}.json`)));
+        const bundled = await getJson('public_data/index.json');
+        const files = await Promise.all(bundled.months.map(m => getJson(`public_data/${m.month}.json`)));
         files.forEach(f => { state.months[f.month] = f; });
+        let updatedOn = bundled.updated_on;
+        try {
+            // Months published from report uploads replace bundled (demo) months
+            const live = await storageJson('index.json');
+            const liveFiles = await Promise.all(live.months.map(m => storageJson(`${m.month}.json`)));
+            liveFiles.forEach(f => { state.months[f.month] = f; });
+            updatedOn = live.updated_on;
+        } catch (err) {
+            console.info('No uploaded months yet; showing bundled data', err.message);
+        }
+        const months = Object.values(state.months).sort((a, b) => a.month.localeCompare(b.month))
+            .map(d => ({ month: d.month, month_label: d.month_label, data_status: d.data_status }));
+        state.index = { latest: months[months.length - 1].month, updated_on: updatedOn, months };
         [state.actions, state.stories] = await Promise.all([getJson('content/actions.json'), getJson('content/stories.json')]);
-        state.current = state.index.latest;
+        state.current = [...months].reverse().find(m => m.data_status === 'real')?.month || state.index.latest;
     }
 
     // The 12 months ending at the selected month (only those that exist)
@@ -52,6 +70,7 @@
         if (cur.data_status === 'demo') parts.push(`נתוני ${cur.month_label} הם נתוני הדגמה.`);
         else if (demoMonths) parts.push(`גרסת הדגמה: נתוני ${cur.month_label} אמיתיים; ${demoMonths} החודשים שלפניו הם נתוני הדגמה עד שיצטברו נתוני אמת.`);
         if (cur.provenance.reopened_rate === 'demo' && cur.data_status !== 'demo') parts.push('שיעור הפניות שנפתחו מחדש עדיין אינו נאסף במערכת ומוצג כנתון הדגמה.');
+        if (cur.provenance.reopened_rate === 'not_collected') parts.push('שיעור הפניות שנפתחו מחדש עדיין אינו נאסף במערכת המוקד; בגרף שלו מופיעים רק ערכי הדגמה של חודשים קודמים.');
         if (state.actions.draft || state.stories.draft) parts.push('התכנים בסעיפים 3 ו-4 הם טיוטה לאישור.');
         $('demoNotice').hidden = !parts.length;
         $('demoNotice').textContent = parts.join(' ');
@@ -120,7 +139,7 @@
         const d = state.months[state.current];
         const reoDemo = isDemo(d, 'reopened_rate');
         $('cityOnTimeNow').textContent = `${shortLabel(d.month)}: ${pct(d.city.on_time_rate)}`;
-        $('cityReopenedNow').textContent = `${shortLabel(d.month)}: ${pct(d.city.reopened_rate)}`;
+        $('cityReopenedNow').textContent = `${shortLabel(d.month)}: ${d.city.reopened_rate == null ? 'טרם נאסף' : pct(d.city.reopened_rate)}`;
         $('reoTag').hidden = !reoDemo;
         const rows = d.topics.rows.filter(t => t.id !== 'other');
         $('topicRows').innerHTML = rows.map((t, i) => t.suppressed
@@ -128,7 +147,7 @@
             : `<tr>
                 <td>${esc(t.name)}</td>
                 <td>${rateCell(t.on_time_rate)}</td>
-                <td><span class="rate">${pct(t.reopened_rate)}</span></td>
+                <td>${t.reopened_rate == null ? '<span class="empty">טרם נאסף</span>' : `<span class="rate">${pct(t.reopened_rate)}</span>`}</td>
                 <td class="spark" data-i="${i}"></td>
               </tr>`).join('');
         rows.forEach((t, i) => {
@@ -177,7 +196,7 @@
             <div class="stats">
               <span><strong>${row?.suppressed ? '—' : num(row.cases)}</strong> פניות</span>
               <span><strong>${pct(row?.on_time_rate)}</strong> טופלו בזמן</span>
-              <span><strong>${pct(row?.reopened_rate)}</strong> נפתחו מחדש${isDemo(d, 'reopened_rate') && row?.reopened_rate != null ? ' (הדגמה)' : ''}</span>
+              <span>${row?.reopened_rate == null ? 'נפתחו מחדש: טרם נאסף' : `<strong>${pct(row.reopened_rate)}</strong> נפתחו מחדש${isDemo(d, 'reopened_rate') ? ' (הדגמה)' : ''}`}</span>
             </div>
             <div class="charts-2">
               <figure class="chart-card"><figcaption>טופלו בזמן – 12 חודשים <span class="fig-now">${pct(row?.on_time_rate)}</span></figcaption><div id="hoodRate"></div></figure>

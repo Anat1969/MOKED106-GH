@@ -1,0 +1,22 @@
+{
+ "months": {
+  "2026-05": {
+   "active": "bundled",
+   "versions": [
+    {
+     "id": "bundled",
+     "uploaded_at": null,
+     "note": "נקרא מדוח המנכ\"ל של מאי 2026 (גרסה מובנית באפליקציה)",
+     "files": [
+      "דוח מנכל מוקד עירוני מאי- 2026.pptx",
+      "קובץ 10 נושאים לפי רחובות חודש מאי.xlsx"
+     ],
+     "summary": {
+      "total_calls": 21084,
+      "sla_percent": 90.5
+     }
+    }
+   ]
+  }
+ }
+}

@@ -6,71 +6,71 @@
    "month": "2025-06",
    "month_label": "יוני 2025",
    "data_status": "demo",
-   "total_cases": 21478,
-   "on_time_rate": 90.7
+   "total_cases": 19966,
+   "on_time_rate": 91.1
   },
   {
    "month": "2025-07",
    "month_label": "יולי 2025",
    "data_status": "demo",
-   "total_cases": 22704,
-   "on_time_rate": 92.1
+   "total_cases": 21607,
+   "on_time_rate": 91.5
   },
   {
    "month": "2025-08",
    "month_label": "אוגוסט 2025",
    "data_status": "demo",
-   "total_cases": 20897,
+   "total_cases": 20755,
    "on_time_rate": 91.1
   },
   {
    "month": "2025-09",
    "month_label": "ספטמבר 2025",
    "data_status": "demo",
-   "total_cases": 21640,
-   "on_time_rate": 89.5
+   "total_cases": 19271,
+   "on_time_rate": 89.3
   },
   {
    "month": "2025-10",
    "month_label": "אוקטובר 2025",
    "data_status": "demo",
-   "total_cases": 19311,
-   "on_time_rate": 92.1
+   "total_cases": 21030,
+   "on_time_rate": 90.5
   },
   {
    "month": "2025-11",
    "month_label": "נובמבר 2025",
    "data_status": "demo",
-   "total_cases": 17416,
-   "on_time_rate": 91.4
+   "total_cases": 18894,
+   "on_time_rate": 89.1
   },
   {
    "month": "2025-12",
    "month_label": "דצמבר 2025",
    "data_status": "demo",
-   "total_cases": 17722,
-   "on_time_rate": 88.5
+   "total_cases": 21766,
+   "on_time_rate": 89.3
   },
   {
    "month": "2026-01",
    "month_label": "ינואר 2026",
    "data_status": "demo",
-   "total_cases": 17651,
-   "on_time_rate": 91.4
+   "total_cases": 18934,
+   "on_time_rate": 89.9
   },
   {
    "month": "2026-02",
    "month_label": "פברואר 2026",
    "data_status": "demo",
-   "total_cases": 22394,
-   "on_time_rate": 90.6
+   "total_cases": 17477,
+   "on_time_rate": 89.1
   },
   {
    "month": "2026-03",
    "month_label": "מרץ 2026",
    "data_status": "demo",
-   "total_cases": 22531,
-   "on_time_rate": 91.8
+   "total_cases": 17316,
+   "on_time_rate": 89.3
   },
   {
    "month": "2026-04",
