@@ -1,0 +1,24 @@
+{
+ "_how_to_edit": "One item per weak topic. topic_id = the exact topic name as it appears in the data. Do not type percentages here — the page reads them from the data. target_date format: YYYY-MM-DD. Set draft to false once the text is approved.",
+ "draft": true,
+ "items": [
+  {
+   "topic_id": "טפטפת / צינור השקיה קרוע",
+   "problem": "רוב התיקונים נעשים אחרי יותר מ-6 שעות, בעיקר בשעות הערב ובסופי שבוע.",
+   "action": "צוות כונן השקיה בערבים ובסופי שבוע, וסגירת ברז ראשי מרחוק עד הגעת הצוות.",
+   "target_date": "2026-12-31"
+  },
+  {
+   "topic_id": "יתושים",
+   "problem": "בעונת הקיץ מספר הפניות קופץ ועומס ההדברה גדל.",
+   "action": "תוכנית ריסוס מונעת במוקדי מים עומדים לפני הקיץ, ותגבור צוות הדברה ביוני–ספטמבר.",
+   "target_date": "2027-05-31"
+  },
+  {
+   "topic_id": "פינוי אשפה ביתית",
+   "problem": "עיכובים בפינוי בימים שאחרי חג ובאזורים עם צפיפות מכולות גבוהה.",
+   "action": "סבב פינוי נוסף אחרי חגים, ומעקב יומי אחר מסלולי הקבלן מול זמן התקן.",
+   "target_date": "2026-11-30"
+  }
+ ]
+}

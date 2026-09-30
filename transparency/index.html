@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מוקד 106 אשדוד – דוח שקיפות לתושבים</title>
+<meta name="description" content="האם שמעו אותי, האם עמדו בהבטחה, והאם השכונה שלי משתפרת – נתוני מוקד 106 של עיריית אשדוד, מדי חודש.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/transparency.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">עיריית אשדוד · מוקד 106</p>
+    <h1>דוח שקיפות לתושבים</h1>
+    <p class="lead">שמעו אותי? עמדו בהבטחה? השכונה שלי משתפרת?<br>התשובות, מדי חודש, מתוך נתוני המוקד.</p>
+    <div class="month-row">
+      <label for="monthSelect">חודש הדוח</label>
+      <select id="monthSelect"></select>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <p id="demoNotice" class="notice" hidden></p>
+
+  <section class="answers" aria-label="שלוש התשובות">
+    <article class="answer">
+      <h2>שמעו אותי?</h2>
+      <p class="big" id="aHeard">—</p>
+      <p class="sub" id="aHeardSub"></p>
+    </article>
+    <article class="answer">
+      <h2>עמדו בהבטחה?</h2>
+      <p class="big" id="aKept">—</p>
+      <p class="sub" id="aKeptSub"></p>
+    </article>
+    <article class="answer answer-hood">
+      <h2>השכונה שלי משתפרת?</h2>
+      <select id="hoodSelect" aria-label="בחירת רובע"></select>
+      <p class="big" id="aHood">—</p>
+      <p class="sub" id="aHoodSub"></p>
+    </article>
+  </section>
+
+  <nav class="toc" aria-label="ניווט בדוח">
+    <a href="#promise">ההבטחה שלנו</a>
+    <a href="#kept">האם עמדנו בה</a>
+    <a href="#notyet">איפה עוד לא</a>
+    <a href="#voice" id="tocVoice">אמרתם, עשינו</a>
+    <a href="#method">איך מודדים</a>
+  </nav>
+
+  <section id="promise" class="block">
+    <p class="num">1</p>
+    <h2>ההבטחה שלנו</h2>
+    <p class="intro">לכל נושא יש זמן טיפול שהעירייה מתחייבת אליו. אלה הנושאים שתושבים פונים אליהם הכי הרבה.</p>
+    <ol id="promiseList" class="promise-list"></ol>
+  </section>
+
+  <section id="kept" class="block">
+    <p class="num">2</p>
+    <h2>האם עמדנו בה</h2>
+    <p class="intro">כמה מהפניות טופלו בתוך הזמן שהבטחנו, וכמה נפתחו מחדש כי הטיפול לא הספיק.</p>
+
+    <p class="lens"><span>ריאה</span> שינוי לאורך 12 חודשים</p>
+    <div class="charts-2">
+      <figure class="chart-card">
+        <figcaption>טופלו בזמן – כל העיר <span class="fig-now" id="cityOnTimeNow"></span></figcaption>
+        <div id="cityOnTime"></div>
+      </figure>
+      <figure class="chart-card">
+        <figcaption>נפתחו מחדש – כל העיר <span class="fig-now" id="cityReopenedNow"></span></figcaption>
+        <div id="cityReopened"></div>
+      </figure>
+    </div>
+    <p class="legend"><span class="dot"></span> נתון אמיתי <span class="dot hollow"></span> נתון הדגמה <span class="line-goal"></span> רף מינימלי 80%</p>
+
+    <h3>לפי נושא</h3>
+    <div class="table-wrap">
+      <table class="topics">
+        <thead><tr><th>נושא</th><th>טופלו בזמן</th><th>נפתחו מחדש <span id="reoTag" class="tag" hidden>הדגמה</span></th><th class="trend-col">12 חודשים</th></tr></thead>
+        <tbody id="topicRows"></tbody>
+      </table>
+    </div>
+
+    <h3>לפי רובע</h3>
+    <p class="lens"><span>דופק</span> כמות הפניות בכל רובע – ככל שהריבוע כהה יותר, יותר פניות</p>
+    <div class="sort-row" role="group" aria-label="מיון הרבעים">
+      <button type="button" data-sort="cases" class="on">לפי כמות פניות</button>
+      <button type="button" data-sort="rate">לפי טיפול בזמן</button>
+    </div>
+    <div id="hoodGrid" class="hood-grid"></div>
+    <div id="hoodDetail" class="hood-detail" aria-live="polite"></div>
+  </section>
+
+  <section id="notyet" class="block">
+    <p class="num">3</p>
+    <h2>איפה עוד לא</h2>
+    <p class="intro">שלושת הנושאים שבהם עמדנו בהבטחה הכי מעט החודש, ומה אנחנו עושים כדי לתקן.</p>
+    <div id="weakList" class="weak-list"></div>
+  </section>
+
+  <section id="voice" class="block">
+    <p class="num">4</p>
+    <h2>אמרתם, עשינו</h2>
+    <p class="lens"><span>קול</span> מה תושבים אמרו, ומה השתנה בעקבות זה</p>
+    <div id="storyList" class="story-list"></div>
+  </section>
+
+  <section id="method" class="block">
+    <p class="num">5</p>
+    <h2>איך מודדים</h2>
+    <dl class="method">
+      <dt>טופלו בזמן</dt>
+      <dd>אחוז הפניות שנסגרו בתוך זמן הטיפול שנקבע לנושא (ראו "ההבטחה שלנו").</dd>
+      <dt>נפתחו מחדש</dt>
+      <dd>אחוז הפניות שנסגרו ונפתחו שוב, כי הבעיה חזרה או לא טופלה עד הסוף. מוצג לצד "טופלו בזמן", כי סגירה מהירה שלא פתרה את הבעיה אינה עמידה בהבטחה.</dd>
+      <dt>מקור הנתונים</dt>
+      <dd>מערכת המוקד העירוני 106. בסוף כל חודש מופק קובץ מסוכם אחד, וממנו בלבד נבנה הדף.</dd>
+      <dt>פרטיות</dt>
+      <dd>הנתונים מוצגים ברמת רובע, אגף ונושא בלבד. אין רחובות, אין שמות ואין פרטים אישיים. כל תא עם פחות מ-<span id="minCell">5</span> פניות מוסתר, ולצידו מוסתר תא נוסף כדי שלא ניתן יהיה לחשב אותו מהסכום.</dd>
+      <dt>פניות ללא שיוך</dt>
+      <dd>חלק מהפניות אינן משויכות לרובע (למשל פניות ללא כתובת). הן נספרות בסך הכול ומוצגות בשורה נפרדת.</dd>
+      <dt>בדיקת אמינות</dt>
+      <dd>לפני כל פרסום נבדק אוטומטית שהסכומים זהים בכל הטבלאות, שלכל מדד יש ערך אחד בלבד, ושחודש הדוח תואם לחודש הנתונים. אם בדיקה נכשלת – הדף לא מתעדכן.</dd>
+      <dt>עדכון אחרון</dt>
+      <dd id="updatedOn">—</dd>
+    </dl>
+    <p class="lens-key"><strong>שלוש עדשות:</strong> <span>דופק</span> כמות פניות לפי רובע · <span>ריאה</span> שינוי לאורך זמן · <span>קול</span> אמרתם, עשינו</p>
+  </section>
+</div>
+
+<footer class="foot">
+  <div class="wrap">עיריית אשדוד · מוקד עירוני 106 · נתונים מסוכמים ברמת רובע</div>
+</footer>
+
+<script src="js/charts.js"></script>
+<script src="js/transparency.js"></script>
+</body>
+</html>

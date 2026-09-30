@@ -4,9 +4,17 @@
     {
       "src": "app/app.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "transparency/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
     }
   ],
   "routes": [
+    { "src": "/shkifut", "status": 308, "headers": { "Location": "/shkifut/" } },
+    { "src": "/shkifut/", "dest": "/transparency/index.html" },
+    { "src": "/shkifut/(.*)", "dest": "/transparency/$1" },
     {
       "src": "/(.*)",
       "dest": "app/app.py"
