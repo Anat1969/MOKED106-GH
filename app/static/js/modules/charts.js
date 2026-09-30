@@ -1,4 +1,4 @@
-Chart.defaults.font.family = "'Segoe UI', Tahoma, Arial, sans-serif";
+Chart.defaults.font.family = "'Assistant', 'Segoe UI', Tahoma, Arial, sans-serif";
 
 function slaColor(pct) {
     if (pct >= 90) return '#2E7D32';

@@ -95,6 +95,7 @@ async function publish(index: { months: Record<string, { active: string }> }) {
     for (const ym of months) {
         const m = await getJson(`internal/months/${ym}/${index.months[ym].active}.json`);
         const pub = C.toPublic(m, (m.version?.uploaded_at || new Date().toISOString()).slice(0, 10));
+        pub.verification = C.verificationStamp(m);
         const errs = C.validatePublicMonth(pub, ym);
         if (errs.length) throw Object.assign(new Error(`דף השקיפות לא עודכן: ${errs.join('; ')}`), { status: 422 });
         pubs.push(pub);

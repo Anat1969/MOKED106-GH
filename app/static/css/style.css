@@ -1,5 +1,9 @@
+/* Shared family with the public page (/shkifut): navy + gold, Assistant.
+   Dashboard keeps its own warm paper background and dense layout. */
 :root {
-    --primary: #1B3A5C;
+    --primary: #1a3a6f;
+    --primary-deep: #12294f;
+    --gold: #d4af37;
     --primary-light: #B8860B;
     --bg: #F5F0E8;
     --card-bg: #FFFFFF;
@@ -18,7 +22,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    font-family: 'Assistant', 'Segoe UI', Tahoma, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     direction: rtl;
@@ -26,16 +30,18 @@ body {
 }
 
 header {
-    background: linear-gradient(135deg, var(--primary) 0%, #5D1212 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
     color: white;
-    padding: 1.2rem 2rem;
+    padding: 1.1rem 2rem 1.2rem;
+    border-bottom: 4px solid var(--gold);
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 .header-content {
     max-width: 1400px; margin: 0 auto;
     display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
 }
-header h1 { font-size: 1.5rem; font-weight: 600; }
+header h1 { font-size: 1.6rem; font-weight: 800; }
+.eyebrow { display: block; color: var(--gold); font-weight: 700; font-size: 0.85rem; margin-bottom: 0.1rem; }
 .header-meta { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
 .month-badge, .source-badge {
     background: rgba(255,255,255,0.18);
@@ -53,7 +59,7 @@ nav.tabs {
     border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap;
 }
 .tab:hover { color: var(--primary); background: #F5F0E8; }
-.tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; background: #F5F0E8; }
+.tab.active { color: var(--primary); border-bottom-color: var(--gold); font-weight: 700; background: #F5F0E8; }
 
 main { max-width: 1400px; margin: 0 auto; padding: 1.5rem 2rem; }
 .tab-content { display: none; }
@@ -149,7 +155,7 @@ tbody tr:last-child td { border-bottom: none; }
     cursor: pointer; font-family: inherit; font-size: 0.88rem; transition: all 0.2s;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
-.btn:hover { background: var(--primary); color: white; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(139,26,26,0.25); }
+.btn:hover { background: var(--primary); color: white; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(26,58,111,0.25); }
 .btn.active { background: var(--primary); color: white; box-shadow: inset 0 2px 4px rgba(0,0,0,0.15); }
 
 /* Map controls */
@@ -278,3 +284,23 @@ footer {
 .trend-list h4 { color: var(--primary); margin-bottom: 0.5rem; }
 .trend-list table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
 .trend-list th, .trend-list td { padding: 0.35rem 0.4rem; border-bottom: 1px solid var(--border); text-align: right; }
+
+/* Consistency badge + tab */
+.match-badge {
+    font: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.35rem 0.8rem; border-radius: 20px; cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.5); background: rgba(255,255,255,0.15); color: #fff;
+}
+.match-badge.ok { background: #E8F5E9; color: var(--green); border-color: #A5D6A7; }
+.match-badge.bad { background: #FFEBEE; color: var(--red); border-color: #EF9A9A; }
+.match-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.2rem; }
+.match-card { background: var(--card-bg); border-radius: 12px; padding: 1.2rem 1.3rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-top: 4px solid var(--gold); }
+.match-card h3 { color: var(--primary); font-size: 1.05rem; margin-bottom: 0.3rem; }
+.match-card .muted { font-size: 0.85rem; margin-bottom: 0.6rem; }
+.m-list { list-style: none; }
+.m-list li { padding: 0.4rem 0.6rem 0.4rem 0.5rem; border-radius: 6px; margin-bottom: 0.3rem; font-size: 0.88rem; line-height: 1.45; border-right: 3px solid; }
+.m-ok { background: #F1F8F1; border-color: var(--green) !important; }
+.m-warn { background: #FFF8E1; border-color: var(--gold) !important; }
+.m-bad { background: #FFEBEE; border-color: var(--red) !important; }
+.m-total { font-weight: 800; font-size: 1.1rem; padding: 0.5rem 0.7rem; border-radius: 8px; margin-bottom: 0.6rem; border-right: 4px solid; }
+.m-total.m-ok { color: var(--green); }
+.m-total.m-bad { color: var(--red); }

@@ -7,7 +7,7 @@
     --muted: #5d6677;
     --line: #e3e6ec;
     --paper: #ffffff;
-    --bg: #f7f8fa;
+    --bg: #f8f6f1;
     --below: #a23b2a;
     --radius: 12px;
 }
@@ -214,3 +214,22 @@ table.topics { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
 @media (max-width: 479px) {
     .trend-col, .topics td.spark { display: none; }
 }
+
+/* Icons: thin line, inherit color */
+.ico { width: 1.15em; height: 1.15em; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round;
+    stroke-linejoin: round; vertical-align: -0.2em; margin-inline-end: 0.35em; flex: none; }
+.ico-lg { width: 1.05em; height: 1.05em; color: var(--gold); stroke-width: 2; }
+.answer h2 .ico { color: var(--gold); width: 1.25em; height: 1.25em; }
+.lens span .ico { width: 1em; height: 1em; margin-inline-end: 0.25em; color: var(--gold); }
+.topic-ico { color: var(--navy); opacity: 0.85; width: 1.2em; height: 1.2em; }
+.promise-list .t-name { display: flex; align-items: flex-start; gap: 0.1em; }
+.promise-list .t-name .topic-ico { margin-top: 0.15em; width: 1.35em; height: 1.35em; color: var(--gold); opacity: 1; }
+.t-cell { display: inline-flex; align-items: center; }
+.weak h4 { display: flex; align-items: center; flex-wrap: wrap; }
+.weak h4 .topic-ico, .story .s-where .topic-ico { color: var(--gold); opacity: 1; }
+.back-link {
+    display: inline-flex; align-items: center; gap: 2px; color: #fff; text-decoration: none; font-weight: 700; font-size: 0.95rem;
+    border: 1px solid rgba(255,255,255,0.45); border-radius: 999px; padding: 6px 14px 6px 12px; margin-bottom: 14px;
+}
+.back-link:hover, .back-link:focus-visible { border-color: var(--gold); color: var(--gold); outline: none; }
+.back-ico { margin: 0; }

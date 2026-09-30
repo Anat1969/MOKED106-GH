@@ -21,6 +21,14 @@ def index():
 def admin():
     return send_from_directory('templates', 'admin.html')
 
+# Local development only: on Vercel /shkifut is served by the static build (vercel.json routes)
+TRANSPARENCY_DIR = os.path.join(os.path.dirname(BASE_DIR), 'transparency')
+
+@app.route('/shkifut/')
+@app.route('/shkifut/<path:path>')
+def transparency(path='index.html'):
+    return send_from_directory(TRANSPARENCY_DIR, path)
+
 # Always run on import (needed for gunicorn)
 init_db()
 

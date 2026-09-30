@@ -601,6 +601,50 @@
         return errs;
     }
 
+    // ---------------------------------------------------------------- dashboard <-> public page
+    // Rebuilds the public export from the dashboard's month and compares it, value by value,
+    // with the file residents actually see. Returns areas with counts and every mismatch.
+    const FIELD_LABELS = { cases: 'פניות', on_time_rate: 'עמידה בזמן', standard_text: 'זמן תקן', suppressed: 'הסתרה' };
+    function comparePublic(m, shown) {
+        const expected = toPublic(m, shown.exported_on);
+        const areas = [];
+        const same = (a, b) => (a == null && b == null) || (typeof a === 'number' && typeof b === 'number' ? Math.abs(a - b) < 1e-9 : a === b);
+        const area = (label, pairs) => {
+            const bad = pairs.filter(([, a, b]) => !same(a, b)).map(([what, a, b]) => `${what}: בדשבורד ${a ?? '—'}, בדף השקיפות ${b ?? '—'}`);
+            areas.push({ label, checked: pairs.length, bad });
+        };
+        area('חודש', [['חודש', expected.month, shown.month], ['תווית חודש', expected.month_label, shown.month_label]]);
+        area('כל העיר', [['סה"כ פניות', expected.city.total_cases, shown.city.total_cases],
+            ['עמידה בזמן', expected.city.on_time_rate, shown.city.on_time_rate]]);
+        const table = (key, label, fields) => {
+            const pairs = [];
+            const got = Object.fromEntries((shown[key]?.rows || []).map(r => [r.id ?? r.name, r]));
+            for (const r of expected[key].rows) {
+                const g = got[r.id ?? r.name];
+                if (!g) { pairs.push([`${r.name}`, 'קיים', 'חסר']); continue; }
+                for (const f of fields) pairs.push([`${r.name} – ${FIELD_LABELS[f] || f}`, r[f], g[f]]);
+            }
+            const extra = (shown[key]?.rows || []).filter(g => !expected[key].rows.some(r => (r.id ?? r.name) === (g.id ?? g.name)));
+            extra.forEach(g => pairs.push([`${g.name}`, 'חסר', 'קיים']));
+            pairs.push(['סה"כ', expected[key].total, shown[key]?.total], ['מוסתרים', expected[key].suppressed_total, shown[key]?.suppressed_total]);
+            area(label, pairs);
+        };
+        table('neighborhoods', 'רובעים', ['cases', 'on_time_rate', 'suppressed']);
+        table('departments', 'אגפים', ['cases', 'on_time_rate', 'suppressed']);
+        table('topics', 'נושאים וזמני תקן', ['cases', 'on_time_rate', 'standard_text', 'suppressed']);
+        return {
+            areas,
+            checked: areas.reduce((a, x) => a + x.checked, 0),
+            mismatches: areas.reduce((a, x) => a + x.bad.length, 0),
+        };
+    }
+
+    // Stamp stored in the public file: which report version it came from and how many checks passed
+    function verificationStamp(m) {
+        return { source: `דוח מוקד עירוני ${m.month_label}`, version: m.version?.id || null,
+            checks_passed: m.checks?.ok?.length ?? null, notes: m.checks?.warnings?.length ?? null };
+    }
+
     // ---------------------------------------------------------------- trends
     // Arrow data vs the previous month. dir: 'up'|'down'|'same'; good: true/false/null.
     function change(cur, prev, higherIsBetter) {
@@ -646,5 +690,6 @@
         HEB_MONTHS, NEIGHBORHOODS, HOOD_ALIASES, UNASSIGNED_HOOD, UNASSIGNED_DIV, MIN_CELL, GOAL,
         monthLabel, prevMonthOf, sameTopic, readSlide, parseReport, buildMonth, checkMonth,
         parseStandard, standardText, toPublic, validatePublicMonth, validatePublicIndex, publicIndexEntry, compareMonths,
+        comparePublic, verificationStamp,
     };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

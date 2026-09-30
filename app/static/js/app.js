@@ -31,6 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    document.getElementById('matchBadge').addEventListener('click', () => {
+        document.querySelector('.tab[data-tab="match"]').click();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
     document.getElementById('monthSelect').addEventListener('change', e => {
         const url = new URL(location.href);
         url.searchParams.set('month', e.target.value);
@@ -71,6 +76,7 @@ async function showMonth(ym) {
     const prev = API.months().includes(prevYm) ? await API.month(prevYm) : null;
     State.month = m;
     State.prev = prev;
+    document.getElementById('publicLink').href = `/shkifut/?from=dashboard&month=${ym}`;
     State.trends = MokedCore.compareMonths(m, prev);
     Tables.total = m.summary.total_calls;
     Tables.trends = State.trends;
@@ -246,6 +252,88 @@ function renderAll(m, prev, t) {
     };
     Sidebar.update();
     Sorting.init();
+    renderMatch(m, { managers, districts, heatmap, topIssues, total, totalOverdue });
+}
+
+// ---------------------------------------------------------------- consistency
+const ok = t => `<li class="m-ok">${t}</li>`;
+const note = t => `<li class="m-warn">${t}</li>`;
+const bad = t => `<li class="m-bad">${t}</li>`;
+const escHtml = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+// The file residents see: uploaded months come from storage, otherwise the page's bundled file
+async function fetchPublicMonth(ym) {
+    try {
+        const d = await API.storageGet(`public/${ym}.json`);
+        if (d) return { data: d, where: 'האחסון (פורסם מההעלאה)' };
+    } catch { /* fall through */ }
+    const res = await fetch(`/shkifut/public_data/${ym}.json`, { cache: 'no-cache' });
+    if (res.ok) return { data: await res.json(), where: 'הקובץ המובנה בדף השקיפות' };
+    return null;
+}
+
+async function renderMatch(m, v) {
+    const badge = document.getElementById('matchBadge');
+    badge.hidden = false;
+    badge.className = 'match-badge';
+    badge.textContent = 'בודקת התאמה…';
+
+    // 1. Inside the report (the cross-checks run when it was read)
+    const c = m.checks;
+    document.getElementById('matchReport').innerHTML = `<h3>1. בתוך הדוח</h3>
+        <p class="muted">הבדיקות שרצו כשהדוח נקרא: האם הטבלאות בדוח מסכימות זו עם זו.</p>` + (c
+        ? `<ul class="m-list">${c.errors.map(e => bad(escHtml(e))).join('')}${c.ok.map(x => ok(escHtml(x))).join('')}${c.warnings.map(x => note(escHtml(x))).join('')}</ul>`
+        : '<p class="muted">לגרסה זו לא נשמרו תוצאות בדיקה.</p>');
+
+    // 2. Between the dashboard tabs (recomputed live from what is on screen)
+    const mgrSum = v.managers.reduce((a, x) => a + x.total_calls, 0);
+    const dSum = v.districts.reduce((a, x) => a + x.total_calls, 0);
+    const odSum = v.managers.reduce((a, x) => a + (x.overdue_open || 0), 0);
+    const heatBad = v.heatmap.data.filter(r => v.heatmap.issues.reduce((a, t) => a + (r[t] || 0), 0) !== r.total);
+    const located = v.heatmap.data.filter(r => MapView.coordsFor(r.street)).length;
+    const tabs = [
+        ok(`כל הלשוניות מציגות את אותה גרסה: ${escHtml(m.month_label)} · ${escHtml(versionText(m))}`),
+        mgrSum === v.total ? ok(`לשונית מנהלים (${fmtN(mgrSum)}) = סה"כ בסקירה (${fmtN(v.total)})`)
+            : note(`לשונית מנהלים מסתכמת ל-${fmtN(mgrSum)}, הסה"כ בסקירה ${fmtN(v.total)} — כך בדוח המקור (הפרש ${fmtN(v.total - mgrSum)})`),
+        odSum === v.totalOverdue ? ok(`חורגות ופתוחות: סכום המנהלים = הכרטיס בסקירה (${fmtN(odSum)})`)
+            : note(`חורגות ופתוחות: סכום המנהלים ${fmtN(odSum)}, בסקירה ${fmtN(v.totalOverdue)}`),
+        dSum <= v.total ? ok(`לשונית רובעים: ${fmtN(dSum)} משויכות + ${fmtN(v.total - dSum)} ללא שיוך = ${fmtN(v.total)}`)
+            : bad(`לשונית רובעים (${fmtN(dSum)}) גדולה מהסה"כ (${fmtN(v.total)})`),
+        heatBad.length ? bad(`טבלת החום: ${heatBad.length} רחובות לא מסתכמים לעמודת הסה"כ`)
+            : ok(`טבלת החום: כל ${v.heatmap.data.length} הרחובות מסתכמים לעמודת הסה"כ`),
+        (located === v.heatmap.data.length ? ok : note)(`מפה: ${located} מתוך ${v.heatmap.data.length} רחובות מטבלת החום ממוקמים על המפה, עם אחוזי תקן מאותה גרסה`),
+    ];
+    document.getElementById('matchTabs').innerHTML = `<h3>2. בין הלשוניות בדשבורד</h3>
+        <p class="muted">חישוב חי ממה שמוצג עכשיו על המסך.</p><ul class="m-list">${tabs.join('')}</ul>`;
+
+    // 3. Dashboard -> public page, value by value
+    const box = document.getElementById('matchPublic');
+    const pub = await fetchPublicMonth(m.month);
+    let status;
+    if (!pub) {
+        box.innerHTML = `<h3>3. מול דף השקיפות לציבור</h3><p class="muted">לחודש זה אין עדיין דף שקיפות.</p>`;
+        status = 'none';
+    } else {
+        const cmp = MokedCore.comparePublic(m, pub.data);
+        const stamp = pub.data.verification;
+        box.innerHTML = `<h3>3. מול דף השקיפות לציבור</h3>
+            <p class="muted">בונה מחדש מהדשבורד את מה שהתושב אמור לראות, ומשווה לכל מספר בקובץ שמוצג בפועל (${escHtml(pub.where)}).</p>
+            <p class="m-total ${cmp.mismatches ? 'm-bad' : 'm-ok'}">${cmp.mismatches ? `${cmp.mismatches} אי-התאמות מתוך ${cmp.checked} ערכים` : `כל ${cmp.checked} הערכים זהים`}</p>
+            <ul class="m-list">${cmp.areas.map(a => a.bad.length
+                ? bad(`${a.label}: ${a.bad.length} מתוך ${a.checked} שונים<br><small>${a.bad.slice(0, 5).map(escHtml).join('<br>')}</small>`)
+                : ok(`${a.label}: ${a.checked} ערכים זהים`)).join('')}</ul>
+            ${stamp ? `<p class="muted">חותמת בדף השקיפות: ${escHtml(stamp.source)}${stamp.checks_passed != null ? ` · ${stamp.checks_passed} בדיקות עברו` : ''}.</p>` : ''}
+            <p class="muted">שורות עם פחות מ-${MokedCore.MIN_CELL} פניות מוסתרות בדף הציבורי בכוונה — גם זה נבדק.</p>`;
+        status = cmp.mismatches ? 'bad' : 'ok';
+    }
+    const notes = c?.warnings?.length || 0;
+    if (c?.errors?.length || status === 'bad') {
+        badge.className = 'match-badge bad';
+        badge.textContent = 'נמצאה אי-התאמה — לפרטים';
+    } else {
+        badge.className = 'match-badge ok';
+        badge.textContent = `✓ הנתונים תואמים${notes ? ` · ${notes} הערות מקור` : ''}`;
+    }
 }
 
 // Heatmap arrows only when last month's heatmap covered the same topics

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מוקד 106 אשדוד - דשבורד</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
@@ -12,14 +15,15 @@
 <body>
     <header>
         <div class="header-content">
-            <h1>מוקד עירוני 106 — אשדוד</h1>
+            <h1><span class="eyebrow">עיריית אשדוד · מוקד 106</span>דשבורד ניהולי — מוקד עירוני 106</h1>
             <div class="header-meta">
                 <label class="month-picker">חודש
                     <select id="monthSelect" aria-label="בחירת חודש"></select>
                 </label>
                 <span class="source-badge" id="sourceBadge">טוען…</span>
+                <button type="button" class="match-badge" id="matchBadge" hidden>בודקת התאמה…</button>
                 <a class="header-btn" href="/admin">העלאת דוח חודשי</a>
-                <a class="header-btn gold" href="/shkifut/" target="_blank" rel="noopener">דף השקיפות לציבור</a>
+                <a class="header-btn gold" id="publicLink" href="/shkifut/?from=dashboard">דף השקיפות לציבור</a>
             </div>
         </div>
     </header>
@@ -32,6 +36,7 @@
         <button class="tab" data-tab="heatmap">טבלת חום</button>
         <button class="tab" data-tab="map">מפה</button>
         <button class="tab" data-tab="districts">רובעים</button>
+        <button class="tab" data-tab="match">בדיקת התאמה</button>
     </nav>
 
     <main>
@@ -226,6 +231,17 @@
             </div>
             <div class="source-note" style="margin-top:1rem">
                 <strong>מקור:</strong> <span id="districtsSource"></span>. כמות תושבים — מתוך הדוח.
+            </div>
+        </section>
+
+        <!-- Consistency -->
+        <section id="tab-match" class="tab-content">
+            <h2>בדיקת התאמה — האם כל המספרים מסכימים זה עם זה?</h2>
+            <p class="section-insight">שלוש שכבות בדיקה, שכולן רצות על אותה גרסה של הדוח שמוצגת בדשבורד.</p>
+            <div class="match-grid">
+                <div class="match-card" id="matchReport"></div>
+                <div class="match-card" id="matchTabs"></div>
+                <div class="match-card" id="matchPublic"></div>
             </div>
         </section>
     </main>

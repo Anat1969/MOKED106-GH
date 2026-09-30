@@ -161,11 +161,11 @@ const MapView = {
 
             const popup = `
                 <div style="direction:rtl;font-family:'Segoe UI',Arial;min-width:230px">
-                    <h4 style="margin:0 0 4px;color:#8B1A1A;font-size:14px">${street.name}</h4>
+                    <h4 style="margin:0 0 4px;color:#1a3a6f;font-size:14px">${street.name}</h4>
                     <p style="margin:0 0 4px;font-size:12px;font-weight:bold">${headline}</p>
                     <p style="margin:0 0 6px;font-size:11px;color:#666">פניות: ${street.total} | תקן משוקלל: ${street.sla}%</p>
                     <table style="width:100%;font-size:11px;border-collapse:collapse">
-                        <thead><tr style="background:#8B1A1A;color:white">
+                        <thead><tr style="background:#1a3a6f;color:white">
                             <th style="padding:3px 6px;text-align:right">נושא</th>
                             <th style="padding:3px 6px;text-align:center">פניות</th>
                             <th style="padding:3px 6px;text-align:center">תקן</th>

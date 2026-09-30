@@ -190,6 +190,24 @@ const Sidebar = {
                 <div class="sb-item">נתונים: דוח מוקד 106, ${s.monthLabel}</div>
             </div>`,
 
+        match: s => `
+            <div class="sb-section">
+                <div class="sb-title">מקרא בדיקת התאמה</div>
+                <div class="sb-row"><span class="sb-dot" style="background:#2E7D32"></span> תואם</div>
+                <div class="sb-row"><span class="sb-dot" style="background:#d4af37"></span> הערה — פער בדוח המקור עצמו</div>
+                <div class="sb-row"><span class="sb-dot" style="background:#C62828"></span> אי-התאמה — דורש תיקון</div>
+            </div>
+            <div class="sb-section">
+                <div class="sb-title">מה נבדק</div>
+                <div class="sb-item">1. הטבלאות בדוח זו מול זו</div>
+                <div class="sb-item">2. הלשוניות בדשבורד זו מול זו</div>
+                <div class="sb-item">3. הדשבורד מול דף השקיפות, ערך אחר ערך</div>
+            </div>
+            <div class="sb-section">
+                <div class="sb-title">מקור</div>
+                <div class="sb-item">${s.monthLabel} · ${s.versionNote}</div>
+            </div>`,
+
         districts: s => `
             <div class="sb-section">
                 <div class="sb-title">מקרא צבעים — תקן</div>

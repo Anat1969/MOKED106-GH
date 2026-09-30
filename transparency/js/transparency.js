@@ -13,6 +13,14 @@
     const LONG = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'];
 
     const $ = id => document.getElementById(id);
+    const icon = (id, cls = 'ico') => `<svg class="${cls}" aria-hidden="true"><use href="#${id}"/></svg>`;
+    // Minimal topic icons, matched by keywords in the topic name
+    const TOPIC_ICONS = [
+        [/גזם|עצ|נטיע|גינ/, 't-tree'], [/אשפה|פסולת|גרוטאות|מכולת/, 't-trash'], [/רכב|חני|חוסם/, 't-car'],
+        [/חיות|כלב|חתול|פגר|וטרינר/, 't-paw'], [/ריצוף|אספלט|מדרכ|דרכים/, 't-pave'], [/יתוש|הדברה|מזיק/, 't-bug'],
+        [/טפטפת|השקיה|מים|ביוב|נזיל/, 't-drop'], [/ניקיון|לכלוך|טיאוט/, 't-sparkle'],
+    ];
+    const topicIcon = name => icon((TOPIC_ICONS.find(([re]) => re.test(name || '')) || [, 't-dot'])[1], 'ico topic-ico');
     const num = n => n.toLocaleString('he-IL');
     const pct = v => (v == null ? '—' : `${v.toFixed(1)}%`);
     const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -47,7 +55,9 @@
             .map(d => ({ month: d.month, month_label: d.month_label, data_status: d.data_status }));
         state.index = { latest: months[months.length - 1].month, updated_on: updatedOn, months };
         [state.actions, state.stories] = await Promise.all([getJson('content/actions.json'), getJson('content/stories.json')]);
-        state.current = [...months].reverse().find(m => m.data_status === 'real')?.month || state.index.latest;
+        const asked = new URLSearchParams(location.search).get('month');
+        state.current = months.some(m => m.month === asked) ? asked
+            : [...months].reverse().find(m => m.data_status === 'real')?.month || state.index.latest;
     }
 
     // The 12 months ending at the selected month (only those that exist)
@@ -118,7 +128,7 @@
         const topics = d.topics.rows.filter(t => t.id !== 'other' && !t.suppressed && t.standard_text);
         $('promiseList').innerHTML = topics.map(t => `
             <li>
-              <span class="t-name">${esc(t.name)}<span class="t-dept">${esc(t.department)}</span></span>
+              <span class="t-name">${topicIcon(t.name)}<span>${esc(t.name)}<span class="t-dept">${esc(t.department)}</span></span></span>
               <span class="t-std"><small>נטפל תוך</small>${esc(t.standard_text)}</span>
             </li>`).join('');
     }
@@ -145,7 +155,7 @@
         $('topicRows').innerHTML = rows.map((t, i) => t.suppressed
             ? `<tr><td>${esc(t.name)}</td><td colspan="3" class="empty">פחות מ-5 פניות – מוסתר</td></tr>`
             : `<tr>
-                <td>${esc(t.name)}</td>
+                <td><span class="t-cell">${topicIcon(t.name)}${esc(t.name)}</span></td>
                 <td>${rateCell(t.on_time_rate)}</td>
                 <td>${t.reopened_rate == null ? '<span class="empty">טרם נאסף</span>' : `<span class="rate">${pct(t.reopened_rate)}</span>`}</td>
                 <td class="spark" data-i="${i}"></td>
@@ -218,7 +228,7 @@
         $('weakList').innerHTML = weakest.map(t => {
             const a = state.actions.items.find(x => x.topic_id === t.id);
             return `<article class="weak">
-                <h4>${esc(t.name)}${draft}</h4>
+                <h4>${topicIcon(t.name)}${esc(t.name)}${draft}</h4>
                 <p class="w-rate">טופלו בזמן: <strong${t.on_time_rate < GOAL ? ' class="bad"' : ''}>${pct(t.on_time_rate)}</strong> · ההבטחה: תוך ${esc(t.standard_text)}</p>
                 ${a ? `<dl>
                     <dt>מה הבעיה</dt><dd>${esc(a.problem)}</dd>
@@ -236,7 +246,7 @@
         const draft = state.stories.draft ? '<span class="tag">טיוטה</span>' : '';
         $('storyList').innerHTML = list.map(s => `
             <article class="story">
-              <p class="s-where">${esc(s.neighborhood)} · ${esc(s.topic)}${draft}</p>
+              <p class="s-where">${topicIcon(s.topic)}${esc(s.neighborhood)} · ${esc(s.topic)}${draft}</p>
               <p><span class="s-label">אמרתם:</span>${esc(s.you_said)}</p>
               <p class="s-did"><span class="s-label">עשינו:</span>${esc(s.we_did)}</p>
             </article>`).join('');
@@ -244,6 +254,10 @@
 
     function renderMethod() {
         const d = state.months[state.current];
+        const v = d.verification;
+        $('verifiedNote').textContent = v
+            ? `כל מספר בדף נבנה אוטומטית מ${v.source}${v.checks_passed != null ? `, עבר ${v.checks_passed} בדיקות התאמה בין טבלאות הדוח` : ''}, ונבדק מול הדשבורד הניהולי של העירייה.`
+            : `נתוני ${d.month_label} הם נתוני הדגמה, ולכן לא נבדקו מול דוח.`;
         $('minCell').textContent = d.min_cell_size;
         $('updatedOn').textContent = `${dateLabel(state.index.updated_on)} · נתוני ${d.month_label} הופקו ב-${dateLabel(d.exported_on)}`;
     }
@@ -265,7 +279,18 @@
         renderHoodGrid();
     }
 
+    // Opened from the dashboard or the upload page: show a way back (residents never see it)
+    function showBackLink() {
+        const from = new URLSearchParams(location.search).get('from');
+        const back = { dashboard: ['/', 'חזרה לדשבורד'], admin: ['/admin', 'חזרה להעלאת הדוחות'] }[from];
+        if (!back) return;
+        $('backLink').href = back[0];
+        $('backLink').querySelector('span').textContent = back[1];
+        $('backLink').hidden = false;
+    }
+
     function bind() {
+        showBackLink();
         const ms = $('monthSelect');
         ms.innerHTML = [...state.index.months].reverse()
             .map(m => `<option value="${m.month}">${esc(m.month_label)}${m.data_status === 'demo' ? ' (הדגמה)' : ''}</option>`).join('');

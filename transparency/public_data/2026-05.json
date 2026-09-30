@@ -364,5 +364,11 @@
     "reopened_rate": null
    }
   ]
+ },
+ "verification": {
+  "source": "דוח מוקד עירוני מאי 2026",
+  "version": "bundled",
+  "checks_passed": 10,
+  "notes": 6
  }
 }
