@@ -1,0 +1,29 @@
+{
+ "name": "מוקד 106 – דשבורד ניהולי",
+ "short_name": "מוקד 106",
+ "lang": "he",
+ "dir": "rtl",
+ "start_url": "/",
+ "scope": "/",
+ "display": "standalone",
+ "theme_color": "#1a3a6f",
+ "background_color": "#f5f0e8",
+ "icons": [
+  {
+   "src": "/static/icons/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "/static/icons/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "/static/icons/icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

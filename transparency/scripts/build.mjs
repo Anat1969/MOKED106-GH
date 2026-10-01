@@ -10,7 +10,7 @@ execFileSync(process.execPath, [join(ROOT, 'scripts', 'validate.mjs')], { stdio:
 const DIST = join(ROOT, 'dist');
 rmSync(DIST, { recursive: true, force: true });
 mkdirSync(DIST);
-for (const p of ['index.html', 'css', 'js', 'public_data', 'content']) {
+for (const p of ['index.html', 'manifest.webmanifest', 'icons', 'css', 'js', 'public_data', 'content']) {
   cpSync(join(ROOT, p), join(DIST, p), { recursive: true });
 }
 console.log('Built transparency site -> dist/');
