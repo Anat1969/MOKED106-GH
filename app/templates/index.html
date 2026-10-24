@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://appofapp-gh.vercel.app/ai-menu.js"></script>
 </head>
 <body>
     <header>
@@ -27,8 +28,9 @@
                 </label>
                 <span class="source-badge" id="sourceBadge">טוען…</span>
                 <button type="button" class="match-badge" id="matchBadge" hidden>בודקת התאמה…</button>
-                <a class="header-btn" href="/admin">העלאת דוח חודשי</a>
                 <a class="header-btn gold" id="publicLink" href="/shkifut/?from=dashboard">דף השקיפות לציבור</a>
+                <ai-menu id="aiMenu"></ai-menu>
+                <script>document.getElementById('aiMenu').items = [{ label: 'העלאת דוח חודשי', onSelect: function () { location.href = '/admin'; } }];</script>
             </div>
         </div>
     </header>
