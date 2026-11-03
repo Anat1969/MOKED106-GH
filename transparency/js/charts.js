@@ -10,6 +10,13 @@ const Charts = (() => {
         return n;
     }
 
+    // The accessible name carries the data itself, so a screen reader hears the values
+    function describe(label, pts, fmt) {
+        const vals = pts.filter(p => p.value != null)
+            .map(p => `${p.full || p.label} ${fmt(p.value)}${p.demo ? ' הדגמה' : ''}`);
+        return vals.length ? `${label}: ${vals.join(', ')}` : label;
+    }
+
     function svg(w, h, label) {
         const s = el('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-label': label, direction: 'ltr' });
         s.style.direction = 'ltr';
@@ -37,6 +44,7 @@ const Charts = (() => {
         const W = 340, H = 170, P = { t: 14, r: 12, b: 26, l: 34 };
         const vals = pts.map(p => p.value).filter(v => v != null);
         const fmt = opts.fmt || (v => v);
+        if (!vals.length) { container.textContent = ''; return; }
         let lo = Math.min(...vals, opts.goal ?? Infinity) - 1;
         let hi = Math.max(...vals) + 1;
         if (opts.min != null) lo = opts.min;
@@ -48,7 +56,7 @@ const Charts = (() => {
         const y = v => P.t + (max - v) * (H - P.t - P.b) / (max - min);
         const cls = opts.gold ? ' gold' : '';
 
-        const s = svg(W, H, opts.label || '');
+        const s = svg(W, H, describe(opts.label || '', pts, fmt));
         const grid = el('g', { class: 'grid' });
         const axis = el('g', { class: 'axis' });
         for (let v = min; v <= max + 1e-9; v += step) {
@@ -87,7 +95,7 @@ const Charts = (() => {
         const bw = (W - P.l - P.r) / pts.length;
         const y = v => P.t + (max - v) * (H - P.t - P.b) / max;
         const fmt = opts.fmt || (v => v.toLocaleString('he-IL'));
-        const s = svg(W, H, opts.label || '');
+        const s = svg(W, H, describe(opts.label || '', pts, fmt));
         const axis = el('g', { class: 'axis' });
         const grid = el('g', { class: 'grid' });
         for (let v = 0; v <= max + 1e-9; v += tick) {
@@ -100,7 +108,7 @@ const Charts = (() => {
             const cx = P.l + i * bw + bw / 2;
             if (p.value != null) {
                 const r = el('rect', { class: `bar${p.demo ? ' demo' : ''}`, x: cx - bw * 0.32, width: bw * 0.64,
-                    y: y(p.value), height: Math.max(1, H - P.b - y(p.value)), rx: 2 });
+                    y: y(p.value), height: Math.max(1, H - P.b - y(p.value)) });
                 r.appendChild(el('title', {}, `${p.full || p.label}: ${fmt(p.value)}${p.demo ? ' (הדגמה)' : ''}`));
                 s.appendChild(r);
             }
