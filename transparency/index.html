@@ -12,11 +12,12 @@
 <meta name="theme-color" content="#1a3a6f">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/transparency.css">
 <script src="https://appofapp-gh.vercel.app/ai-menu.js" data-auto></script>
 </head>
 <body>
+<a class="skip" href="#main">דילוג לתוכן הדוח</a>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
   <defs>
     <symbol id="i-heard" viewBox="0 0 24 24"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.3 7.6L3.5 20.5l1.4-4.4A8.5 8.5 0 1 1 20.5 11.5z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></symbol>
@@ -55,31 +56,40 @@
   </div>
 </header>
 
-<div class="wrap">
-  <p id="demoNotice" class="notice" hidden></p>
+<main id="main" class="wrap" tabindex="-1">
+  <section class="truth" aria-labelledby="truthTitle">
+    <h2 id="truthTitle" class="truth-title">מה כאן אמיתי</h2>
+    <ol id="truthStrip" class="truth-strip" aria-label="12 החודשים בדוח: אמיתי או הדגמה"></ol>
+    <p id="truthLine" class="truth-line"></p>
+    <p id="demoNotice" class="notice" role="status" hidden></p>
+    <button type="button" id="demoToggle" class="btn-quiet" aria-pressed="false">הצגת חודשי ההדגמה בגרפים</button>
+  </section>
 
   <section class="answers" aria-label="שלוש התשובות">
     <article class="answer">
       <h2><svg class="ico" aria-hidden="true"><use href="#i-heard"/></svg>שמעו אותי?</h2>
       <p class="big" id="aHeard">—</p>
       <p class="sub" id="aHeardSub"></p>
+      <p class="why" id="aHeardWhy"></p>
     </article>
     <article class="answer">
       <h2><svg class="ico" aria-hidden="true"><use href="#i-kept"/></svg>עמדו בהבטחה?</h2>
       <p class="big" id="aKept">—</p>
       <p class="sub" id="aKeptSub"></p>
+      <p class="why" id="aKeptWhy"></p>
     </article>
     <article class="answer answer-hood">
       <h2><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg>השכונה שלי משתפרת?</h2>
       <select id="hoodSelect" aria-label="בחירת רובע"></select>
       <p class="big" id="aHood">—</p>
       <p class="sub" id="aHoodSub"></p>
+      <p class="why" id="aHoodWhy"></p>
     </article>
   </section>
 
   <nav class="toc" aria-label="ניווט בדוח">
-    <a href="#promise">ההבטחה שלנו</a>
-    <a href="#kept">האם עמדנו בה</a>
+    <a href="#promise">הבטחה מול מציאות</a>
+    <a href="#kept">לאורך זמן ולפי רובע</a>
     <a href="#notyet">איפה עוד לא</a>
     <a href="#voice" id="tocVoice">אמרתם, עשינו</a>
     <a href="#method">איך מודדים</a>
@@ -87,51 +97,59 @@
 
   <section id="promise" class="block">
     <p class="num">1</p>
-    <h2><svg class="ico ico-lg" aria-hidden="true"><use href="#i-clock"/></svg>ההבטחה שלנו</h2>
-    <p class="intro">לכל נושא יש זמן טיפול שהעירייה מתחייבת אליו. אלה הנושאים שתושבים פונים אליהם הכי הרבה.</p>
-    <ol id="promiseList" class="promise-list"></ol>
+    <h2><svg class="ico ico-lg" aria-hidden="true"><use href="#i-clock"/></svg>הבטחה מול מציאות</h2>
+    <p class="intro">לכל נושא העירייה מתחייבת לזמן טיפול.<br>הפס מראה כמה מהפניות טופלו בתוך הזמן הזה, מול הרף העירוני של <b>80%</b>.</p>
+    <p id="promiseInsight" class="insight"></p>
+    <div class="row-tools">
+      <div class="sort-row" role="group" aria-label="מיון ההבטחות">
+        <button type="button" data-psort="cases" aria-pressed="true">לפי כמות פניות</button>
+        <button type="button" data-psort="gap" aria-pressed="false">מהפער הגדול לקטן</button>
+      </div>
+      <p class="sorted-by" id="promiseSorted"></p>
+    </div>
+    <p class="legend" aria-hidden="true"><span class="key-fill ok"></span>עמדו ברף <span class="key-fill bad"></span>מתחת לרף <span class="key-mark"></span>רף 80%</p>
+    <ol id="promiseList" class="pvr-list"></ol>
+    <p id="promiseTrendNote" class="note"></p>
   </section>
 
   <section id="kept" class="block">
     <p class="num">2</p>
-    <h2><svg class="ico ico-lg" aria-hidden="true"><use href="#i-chart"/></svg>האם עמדנו בה</h2>
-    <p class="intro">כמה מהפניות טופלו בתוך הזמן שהבטחנו, וכמה נפתחו מחדש כי הטיפול לא הספיק.</p>
+    <h2><svg class="ico ico-lg" aria-hidden="true"><use href="#i-chart"/></svg>לאורך זמן ולפי רובע</h2>
+    <p class="intro">מגמה מוצגת רק מנתוני אמת.<br>חודשי הדגמה מופיעים בגרף רק אם ביקשתם, בקו מקווקו, ולא נכנסים לשום מסקנה.</p>
 
     <p class="lens"><span><svg class="ico" aria-hidden="true"><use href="#i-trend"/></svg>ריאה</span> שינוי לאורך 12 חודשים</p>
     <div class="charts-2">
       <figure class="chart-card">
-        <figcaption>טופלו בזמן – כל העיר <span class="fig-now" id="cityOnTimeNow"></span></figcaption>
+        <figcaption>טופלו בזמן, כל העיר <span class="fig-now" id="cityOnTimeNow"></span></figcaption>
         <div id="cityOnTime"></div>
+        <p class="why" id="cityOnTimeWhy"></p>
       </figure>
       <figure class="chart-card">
-        <figcaption>נפתחו מחדש – כל העיר <span class="fig-now" id="cityReopenedNow"></span></figcaption>
+        <figcaption>נפתחו מחדש, כל העיר <span class="fig-now" id="cityReopenedNow"></span></figcaption>
         <div id="cityReopened"></div>
+        <p class="why" id="cityReopenedWhy"></p>
       </figure>
     </div>
-    <p class="legend"><span class="dot"></span> נתון אמיתי <span class="dot hollow"></span> נתון הדגמה <span class="line-goal"></span> רף מינימלי 80%</p>
-
-    <h3>לפי נושא</h3>
-    <div class="table-wrap">
-      <table class="topics">
-        <thead><tr><th>נושא</th><th>טופלו בזמן</th><th>נפתחו מחדש <span id="reoTag" class="tag" hidden>הדגמה</span></th><th class="trend-col">12 חודשים</th></tr></thead>
-        <tbody id="topicRows"></tbody>
-      </table>
-    </div>
+    <p class="legend" id="chartLegend"><span class="dot"></span> נתון אמיתי <span class="dot hollow"></span> נתון הדגמה (מקווקו) <span class="line-goal"></span> רף מינימלי 80%</p>
 
     <h3>לפי רובע</h3>
-    <p class="lens"><span><svg class="ico" aria-hidden="true"><use href="#i-pulse"/></svg>דופק</span> כמות הפניות בכל רובע – ככל שהריבוע כהה יותר, יותר פניות</p>
-    <div class="sort-row" role="group" aria-label="מיון הרבעים">
-      <button type="button" data-sort="cases" class="on">לפי כמות פניות</button>
-      <button type="button" data-sort="rate">לפי טיפול בזמן</button>
+    <p class="lens"><span><svg class="ico" aria-hidden="true"><use href="#i-pulse"/></svg>דופק</span> <span id="hoodLensText" class="lens-text">כמות הפניות בכל רובע: ככל שהריבוע כהה יותר, יותר פניות</span></p>
+    <div class="row-tools">
+      <div class="sort-row" role="group" aria-label="תצוגת הרבעים">
+        <button type="button" data-sort="cases" aria-pressed="true">מפת דופק: כמות פניות</button>
+        <button type="button" data-sort="rate" aria-pressed="false">מול ההבטחה: טיפול בזמן</button>
+      </div>
     </div>
+    <p id="hoodInsight" class="insight"></p>
     <div id="hoodGrid" class="hood-grid"></div>
-    <div id="hoodDetail" class="hood-detail" aria-live="polite"></div>
+    <div id="hoodDetail" class="hood-detail"></div>
   </section>
 
   <section id="notyet" class="block">
     <p class="num">3</p>
     <h2><svg class="ico ico-lg" aria-hidden="true"><use href="#i-flag"/></svg>איפה עוד לא</h2>
     <p class="intro">שלושת הנושאים שבהם עמדנו בהבטחה הכי מעט החודש, ומה אנחנו עושים כדי לתקן.</p>
+    <p class="legend" aria-hidden="true"><span class="key-problem">הבעיה</span> <span class="key-solution">הפתרון</span></p>
     <div id="weakList" class="weak-list"></div>
   </section>
 
@@ -154,6 +172,12 @@
       <dd>מערכת המוקד העירוני 106. בסוף כל חודש מופק קובץ מסוכם אחד, וממנו בלבד נבנה הדף.</dd>
       <dt>פרטיות</dt>
       <dd>הנתונים מוצגים ברמת רובע, אגף ונושא בלבד. אין רחובות, אין שמות ואין פרטים אישיים. כל תא עם פחות מ-<span id="minCell">5</span> פניות מוסתר, ולצידו מוסתר תא נוסף כדי שלא ניתן יהיה לחשב אותו מהסכום.</dd>
+      <dt>הרף של 80%</dt>
+      <dd>הרף המינימלי שמולו הדוח מציג את אחוז הטיפול בזמן. נושא או רובע מתחתיו מסומן באדום.</dd>
+      <dt>מגמה</dt>
+      <dd>כיוון שינוי (עלייה, ירידה או יציבות של פחות מנקודה אחת) מחושב רק בין חודשים אמיתיים. חודשי הדגמה לא נכנסים לחישוב.</dd>
+      <dt>מה עוד לא נמדד</dt>
+      <dd id="gapsNote">שיעור הפניות שנפתחו מחדש עדיין לא נאסף במערכת המוקד.</dd>
       <dt>פניות ללא שיוך</dt>
       <dd>חלק מהפניות אינן משויכות לרובע (למשל פניות ללא כתובת). הן נספרות בסך הכול ומוצגות בשורה נפרדת.</dd>
       <dt>בדיקת אמינות</dt>
@@ -165,7 +189,7 @@
     </dl>
     <p class="lens-key"><strong>שלוש עדשות:</strong> <span>דופק</span> כמות פניות לפי רובע · <span>ריאה</span> שינוי לאורך זמן · <span>קול</span> אמרתם, עשינו</p>
   </section>
-</div>
+</main>
 
 <footer class="foot">
   <div class="wrap">עיריית אשדוד · מוקד עירוני 106 · נתונים מסוכמים ברמת רובע</div>
